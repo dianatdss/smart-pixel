@@ -1,11 +1,21 @@
 import React, { useState } from "react";
-
+import { AsyncStorage } from 'react-native';
 import { Text, View, Button, Image, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import * as ImagePicker from "expo-image-picker";
-
 const New = ({ navigation }) => {
+
   const [image, setState] = useState(null);
+  async function storeDataToStorage  (image) {
+    try {
+      let value = await AsyncStorage.getItem('gallery');
+      const newImage = JSON.stringify(image);      
+      value = value ? value.concat(',', newImage): newImage;
+      await AsyncStorage.setItem('gallery', value);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   async function pickImageFromGallery() {
     ImagePicker.requestCameraRollPermissionsAsync();
 
@@ -15,11 +25,9 @@ const New = ({ navigation }) => {
       aspect: [4, 3],
       quality: 1
     });
-
-    console.log(result);
-
     if (!result.cancelled) {
       setState(result.uri);
+      storeDataToStorage(result.uri);
     }
   }
 
@@ -32,11 +40,9 @@ const New = ({ navigation }) => {
       aspect: [4, 3],
       quality: 1
     });
-
-    console.log(result);
-
     if (!result.cancelled) {
       setState(result.uri);
+      storeDataToStorage(result.uri);
     }
   }
 
@@ -52,7 +58,7 @@ const New = ({ navigation }) => {
         <Button title="Open gallery" onPress={() => pickImageFromGallery()} />
       </View>
       <View style={styles.button}>
-        <Button title="Open camera" onPress={() => pickImageFromCamera()} />
+        <Button title="Open cameraa" onPress={() => pickImageFromCamera()} />
       </View>
 
       {image && <Image source={{ uri: image }} style={styles.image} />}
