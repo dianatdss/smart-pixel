@@ -1,21 +1,21 @@
 import React, { useState } from "react";
-import { AsyncStorage } from 'react-native';
-import { Text, View, Button, Image, StyleSheet } from "react-native";
+import { AsyncStorage } from "react-native";
+import { Text, View, Button, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import * as ImagePicker from "expo-image-picker";
+import EditPhoto from "./editPhoto";
 const New = ({ navigation }) => {
-
   const [image, setState] = useState(null);
-  async function storeDataToStorage  (image) {
+  async function storeDataToStorage(image) {
     try {
-      let value = await AsyncStorage.getItem('gallery');
-      const newImage = JSON.stringify(image);      
-      value = value ? value.concat(',', newImage): newImage;
-      await AsyncStorage.setItem('gallery', value);
+      let value = await AsyncStorage.getItem("gallery");
+      const newImage = JSON.stringify(image);
+      value = value ? value.concat(",", newImage) : newImage;
+      await AsyncStorage.setItem("gallery", value);
     } catch (error) {
       console.log(error);
     }
-  };
+  }
   async function pickImageFromGallery() {
     ImagePicker.requestCameraRollPermissionsAsync();
 
@@ -46,6 +46,18 @@ const New = ({ navigation }) => {
     }
   }
 
+  async function redirectToEditPhoto(image) {
+    try {
+      const value = await AsyncStorage.setItem(
+        "currentEditedImage",
+        JSON.stringify(image)
+      );
+      navigation.navigate('Edit');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Icon
@@ -61,7 +73,12 @@ const New = ({ navigation }) => {
         <Button title="Open cameraa" onPress={() => pickImageFromCamera()} />
       </View>
 
-      {image && <Image source={{ uri: image }} style={styles.image} />}
+      {image && (
+        <TouchableOpacity onPress={ () => redirectToEditPhoto(image)}  >
+          <Image 
+          source={{ uri: image }} style={styles.image} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -78,7 +95,7 @@ const styles = StyleSheet.create({
     height: 150
   },
   button: {
-    width: '50%',
+    width: "50%",
     borderRadius: 30,
     marginVertical: 5
   }

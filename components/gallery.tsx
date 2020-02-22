@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Button, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Button,
+  Image,
+  TouchableOpacity,
+  FlatList, SafeAreaView
+} from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import { AsyncStorage } from "react-native";
 
 const Gallery = ({ navigation }) => {
-
   const [images, setImages] = useState([]);
   async function getDataFromStorage() {
     try {
@@ -12,6 +18,18 @@ const Gallery = ({ navigation }) => {
       if (value !== null) {
         setImages(value.split(",").map(item => JSON.parse(item)));
       }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function redirectToEditPhoto(image) {
+    try {
+      const value = await AsyncStorage.setItem(
+        "currentEditedImage",
+        JSON.stringify(image)
+      );
+      navigation.navigate('Edit');
     } catch (error) {
       console.log(error);
     }
@@ -27,10 +45,16 @@ const Gallery = ({ navigation }) => {
       />
       <Button title="Get data" onPress={() => getDataFromStorage()} />
 
-      {images &&
-        images.map(imageItem => (
-          <Image source={{ uri: imageItem }} style={styles.image} />
-        ))}
+      <FlatList
+        data={images}
+        numColumns={2}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={ () => redirectToEditPhoto(item)}>
+            <Image source={{ uri: item }} style={styles.image} />
+          </TouchableOpacity>
+        )}
+       
+      />
     </View>
   );
 };
@@ -41,10 +65,10 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     marginHorizontal: 20
   },
-
   image: {
-    borderRadius: 30,
-    width: 50,
-    height: 50
+    borderRadius: 10,
+    width: 140,
+    height: 140,
+    margin: 10
   }
 });

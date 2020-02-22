@@ -13,6 +13,8 @@ import {
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Gallery from './components/gallery';
 import New from './components/new';
+
+import EditPhoto from './components/editPhoto';
 const Drawer  = createDrawerNavigator();
 const { width, height } = Dimensions.get("window");
 const scale = PixelRatio.get();
@@ -94,6 +96,7 @@ export default class HelloWorldApp extends Component {
       <Drawer.Navigator initialRouteName="Gallery">
         <Drawer.Screen name="Gallery" component={Gallery} />
         <Drawer.Screen name="New" component={New} />
+        <Drawer.Screen name="Edit"  component={EditPhoto} />
       </Drawer.Navigator>
     </NavigationContainer>
      
