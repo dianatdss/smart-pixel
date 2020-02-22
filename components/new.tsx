@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { AsyncStorage } from "react-native";
-import { Text, View, Button, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Button, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import * as ImagePicker from "expo-image-picker";
-import EditPhoto from "./editPhoto";
+
 const New = ({ navigation }) => {
   const [image, setState] = useState(null);
   async function storeDataToStorage(image) {
