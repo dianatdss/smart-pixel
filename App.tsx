@@ -91,6 +91,7 @@ export default class HelloWorldApp extends Component {
       new PIXI.filters.NoiseFilter()
     ];
 
+    // to hide ÉditPhoto menu option
     return (
       <NavigationContainer>
       <Drawer.Navigator initialRouteName="Gallery">
