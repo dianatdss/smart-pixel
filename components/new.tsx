@@ -3,6 +3,8 @@ import { AsyncStorage } from "react-native";
 import { View, Button, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import * as ImagePicker from "expo-image-picker";
+import AssetUtils from 'expo-asset-utils';
+
 
 const New = ({ navigation }) => {
   const [image, setState] = useState(null);
@@ -26,8 +28,8 @@ const New = ({ navigation }) => {
       quality: 1
     });
     if (!result.cancelled) {
-      setState(result.uri);
-      storeDataToStorage(result.uri);
+      setState(result);
+    //  storeDataToStorage(result.uri);
     }
   }
 
@@ -41,21 +43,35 @@ const New = ({ navigation }) => {
       quality: 1
     });
     if (!result.cancelled) {
-      setState(result.uri);
-      storeDataToStorage(result.uri);
+      setState(result);
+     // storeDataToStorage(result.uri);
     }
   }
 
-  async function redirectToEditPhoto(image) {
+  async function redirectToEditPhoto() {
+
     try {
-      const value = await AsyncStorage.setItem(
-        "currentEditedImage",
-        JSON.stringify(image)
-      );
-      navigation.navigate('Edit');
+      AssetUtils.fromUriAsync(image.uri).then(fromUri => {
+        fromUri.localUri = fromUri.uri;
+        AssetUtils.resolveAsync(fromUri).then(uriResolved => {
+          console.log('uriResolved = ', uriResolved);
+          navigation.navigate('Edit', { photo: uriResolved })
+        });
+      });
     } catch (error) {
       console.log(error);
     }
+
+    /*
+        try {
+          const value = await AsyncStorage.setItem(
+            "currentEditedImage",
+            JSON.stringify(image)
+          );
+          navigation.navigate('Edit');
+        } catch (error) {
+          console.log(error);
+        }*/
   }
 
   return (
@@ -74,9 +90,9 @@ const New = ({ navigation }) => {
       </View>
 
       {image && (
-        <TouchableOpacity onPress={ () => redirectToEditPhoto(image)}  >
-          <Image 
-          source={{ uri: image }} style={styles.image} />
+        <TouchableOpacity onPress={() => redirectToEditPhoto()}  >
+          <Image
+            source={{ uri: image.uri }} style={styles.image} />
         </TouchableOpacity>
       )}
     </View>

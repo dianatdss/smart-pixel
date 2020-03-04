@@ -11,10 +11,13 @@ after that, you have two options --create 2 buttons -- :
 and also remove it from current Edited Photo
 
 */
-import React, { useState } from "react";
+import React, { useState, createRef, useEffect } from "react";
 import { AsyncStorage } from "react-native";
 import { View, Image, StyleSheet, TouchableOpacity, Text } from "react-native";
 import ExpoPixi, { PIXI } from "expo-pixi";
+
+import {readAsStringAsync, EncodingType} from 'expo-file-system';
+
 
 const filters = [
   new PIXI.filters.ColorReplaceFilter(0x000000, 0xff0000),
@@ -48,10 +51,16 @@ const filters = [
   // new PIXI.filters.ShockwaveFilter(),
 ];
 
-const EditPhoto = ({ navigation }) => {
+const EditPhoto = ({ route, navigation }) => {
+  const { photo } = route.params;
   const [image, setImage] = useState(null);
+
+  // for filters:
   const [index, setIndex] = useState(0);
   const [filter, setFilters] = useState(filters[0]);
+  const filterImageRef = createRef();
+
+
   async function getCurrentImageFromStorage() {
 
     try {
@@ -68,31 +77,35 @@ const EditPhoto = ({ navigation }) => {
     console.log(image);
     setIndex(index + 1);
     setFilters(filters[index]);
-    
+
+  }
+
+  function dosmth() {
+
   }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity 
-      style={styles.touchable}
-      onPress={() => getCurrentImageFromStorage()}>
+      <TouchableOpacity
+        style={styles.touchable}
+        onPress={() => dosmth()}>
         <Text> get image </Text>
       </TouchableOpacity>
-    <TouchableOpacity
-      style={styles.touchable}
-      onPress={() => {
-        changeFilter();
-      }}>
+      <TouchableOpacity
+        style={styles.touchable}
+        onPress={() => {
+          changeFilter();
+        }}>
         <Text> change filter </Text>
-    </TouchableOpacity>
-
-    <ExpoPixi.FilterImage
-        source={image}
-        resizeMode={'cover'}
-        style={styles.image}
-        filters={filter}
-      />
-  </View>
+      </TouchableOpacity>
+      {photo &&
+        <ExpoPixi.FilterImage
+          source={photo}
+          resizeMode={'cover'}
+          style={styles.image}
+          filters={filter}
+        />}
+    </View>
   );
 };
 
