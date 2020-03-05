@@ -16,8 +16,6 @@ import { AsyncStorage } from "react-native";
 import { View, Image, StyleSheet, TouchableOpacity, Text } from "react-native";
 import ExpoPixi, { PIXI } from "expo-pixi";
 
-import {readAsStringAsync, EncodingType} from 'expo-file-system';
-
 
 const filters = [
   new PIXI.filters.ColorReplaceFilter(0x000000, 0xff0000),
@@ -74,23 +72,14 @@ const EditPhoto = ({ route, navigation }) => {
     }
   }
   function changeFilter() {
-    console.log(image);
     setIndex(index + 1);
     setFilters(filters[index]);
 
   }
 
-  function dosmth() {
-
-  }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.touchable}
-        onPress={() => dosmth()}>
-        <Text> get image </Text>
-      </TouchableOpacity>
       <TouchableOpacity
         style={styles.touchable}
         onPress={() => {
