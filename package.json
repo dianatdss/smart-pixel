@@ -14,7 +14,11 @@
     "@react-navigation/stack": "^5.0.3",
     "expo": "~36.0.0",
     "expo-asset-utils": "^1.2.0",
+<<<<<<< HEAD
     "expo-gl": "^8.0.0",
+=======
+    "expo-gl": "~8.0.0",
+>>>>>>> a4a16cb34d210aaa76cca23282d5536cacc5d35e
     "expo-image-picker": "~8.0.1",
     "expo-pixi": "^1.2.0",
     "pixi-filters": "^2.4.1",
@@ -28,7 +32,8 @@
     "react-native-safe-area-context": "0.6.0",
     "react-native-screens": "2.0.0-alpha.12",
     "react-native-vector-icons": "^6.6.0",
-    "react-native-web": "~0.11.7"
+    "react-native-web": "~0.11.7",
+    "react-native-view-shot": "3.0.2"
   },
   "devDependencies": {
     "@types/react": "~16.9.0",

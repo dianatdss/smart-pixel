@@ -9,9 +9,10 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import { AsyncStorage } from "react-native";
-
+import AssetUtils from 'expo-asset-utils'
 const Gallery = ({ navigation }) => {
   const [images, setImages] = useState([]);
+
   async function getDataFromStorage() {
     try {
       const value = await AsyncStorage.getItem("gallery");
@@ -25,11 +26,12 @@ const Gallery = ({ navigation }) => {
 
   async function redirectToEditPhoto(image) {
     try {
-      const value = await AsyncStorage.setItem(
-        "currentEditedImage",
-        JSON.stringify(image)
-      );
-      navigation.navigate('Edit');
+    AssetUtils.fromUriAsync(image).then(fromUri => {
+        fromUri.localUri = fromUri.uri;
+        AssetUtils.resolveAsync(fromUri).then(uriResolved => {
+            navigation.navigate('Edit', { photo: uriResolved })
+        });
+    });
     } catch (error) {
       console.log(error);
     }

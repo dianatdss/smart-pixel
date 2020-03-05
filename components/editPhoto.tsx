@@ -11,9 +11,14 @@ after that, you have two options --create 2 buttons -- :
 and also remove it from current Edited Photo
 
 */
+<<<<<<< HEAD
 import React, { useState, createRef, useEffect } from "react";
+=======
+
+import React, { useState } from "react";
+>>>>>>> a4a16cb34d210aaa76cca23282d5536cacc5d35e
 import { AsyncStorage } from "react-native";
-import { View, Image, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import ExpoPixi, { PIXI } from "expo-pixi";
 
 
@@ -60,7 +65,6 @@ const EditPhoto = ({ route, navigation }) => {
 
 
   async function getCurrentImageFromStorage() {
-
     try {
       const value = await AsyncStorage.getItem("currentEditedImage");
       if (value !== null) {
@@ -71,19 +75,32 @@ const EditPhoto = ({ route, navigation }) => {
       console.log(error);
     }
   }
+
+ 
+
   function changeFilter() {
     setIndex(index + 1);
     setFilters(filters[index]);
+<<<<<<< HEAD
 
+=======
+>>>>>>> a4a16cb34d210aaa76cca23282d5536cacc5d35e
   }
 
 
   return (
     <View style={styles.container}>
+<<<<<<< HEAD
+=======
+      <TouchableOpacity style={styles.touchable} onPress={() => getCurrentImageFromStorage()}>
+        <Text> get image </Text>
+      </TouchableOpacity>
+>>>>>>> a4a16cb34d210aaa76cca23282d5536cacc5d35e
       <TouchableOpacity
         style={styles.touchable}
         onPress={() => {
           changeFilter();
+<<<<<<< HEAD
         }}>
         <Text> change filter </Text>
       </TouchableOpacity>
@@ -94,6 +111,19 @@ const EditPhoto = ({ route, navigation }) => {
           style={styles.image}
           filters={filter}
         />}
+=======
+        }}
+      >
+        <Text> change filter </Text>
+      </TouchableOpacity>
+
+      <ExpoPixi.FilterImage
+        source={photo}
+        resizeMode={"cover"}
+        style={styles.image}
+        filters={filter}
+      />
+>>>>>>> a4a16cb34d210aaa76cca23282d5536cacc5d35e
     </View>
   );
 };
@@ -104,17 +134,17 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     marginHorizontal: 20,
     flex: 1,
-    backgroundColor: 'gray',
+    backgroundColor: "gray"
   },
   touchable: {
     height: 50,
-    width: '100%',
-    backgroundColor: 'green',
-    justifyContent: 'center'
+    width: "100%",
+    backgroundColor: "green",
+    justifyContent: "center"
   },
   image: {
     width: 100,
     height: 100,
-    flex: 1,
-  },
+    flex: 1
+  }
 });
