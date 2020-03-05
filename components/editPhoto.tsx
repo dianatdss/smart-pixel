@@ -11,9 +11,10 @@ after that, you have two options --create 2 buttons -- :
 and also remove it from current Edited Photo
 
 */
+
 import React, { useState } from "react";
 import { AsyncStorage } from "react-native";
-import { View, Image, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import ExpoPixi, { PIXI } from "expo-pixi";
 
 const filters = [
@@ -48,12 +49,12 @@ const filters = [
   // new PIXI.filters.ShockwaveFilter(),
 ];
 
-const EditPhoto = ({ navigation }) => {
+const EditPhoto = ({ route, navigation }) => {
+  const { photo } = route.params;
   const [image, setImage] = useState(null);
   const [index, setIndex] = useState(0);
   const [filter, setFilters] = useState(filters[0]);
   async function getCurrentImageFromStorage() {
-
     try {
       const value = await AsyncStorage.getItem("currentEditedImage");
       if (value !== null) {
@@ -64,35 +65,36 @@ const EditPhoto = ({ navigation }) => {
       console.log(error);
     }
   }
+
+ 
+
   function changeFilter() {
     console.log(image);
     setIndex(index + 1);
     setFilters(filters[index]);
-    
   }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity 
-      style={styles.touchable}
-      onPress={() => getCurrentImageFromStorage()}>
+      <TouchableOpacity style={styles.touchable} onPress={() => getCurrentImageFromStorage()}>
         <Text> get image </Text>
       </TouchableOpacity>
-    <TouchableOpacity
-      style={styles.touchable}
-      onPress={() => {
-        changeFilter();
-      }}>
+      <TouchableOpacity
+        style={styles.touchable}
+        onPress={() => {
+          changeFilter();
+        }}
+      >
         <Text> change filter </Text>
-    </TouchableOpacity>
+      </TouchableOpacity>
 
-    <ExpoPixi.FilterImage
-        source={image}
-        resizeMode={'cover'}
+      <ExpoPixi.FilterImage
+        source={photo}
+        resizeMode={"cover"}
         style={styles.image}
         filters={filter}
       />
-  </View>
+    </View>
   );
 };
 
@@ -102,17 +104,17 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     marginHorizontal: 20,
     flex: 1,
-    backgroundColor: 'gray',
+    backgroundColor: "gray"
   },
   touchable: {
     height: 50,
-    width: '100%',
-    backgroundColor: 'green',
-    justifyContent: 'center'
+    width: "100%",
+    backgroundColor: "green",
+    justifyContent: "center"
   },
   image: {
     width: 100,
     height: 100,
-    flex: 1,
-  },
+    flex: 1
+  }
 });
