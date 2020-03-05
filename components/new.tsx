@@ -13,7 +13,7 @@ const New = ({ navigation }) => {
       let value = await AsyncStorage.getItem("gallery");
       const newImage = JSON.stringify(image);
       value = value ? value.concat(",", newImage) : newImage;
-      await AsyncStorage.setItem("gallery", value);
+      await AsyncStorage.setItem("gallery", newImage);
     } catch (error) {
       console.log(error);
     }
@@ -29,7 +29,7 @@ const New = ({ navigation }) => {
     });
     if (!result.cancelled) {
       setState(result);
-    //  storeDataToStorage(result.uri);
+      storeDataToStorage(result.uri);
     }
   }
 
@@ -44,7 +44,7 @@ const New = ({ navigation }) => {
     });
     if (!result.cancelled) {
       setState(result);
-     // storeDataToStorage(result.uri);
+      storeDataToStorage(result.uri);
     }
   }
 
@@ -54,24 +54,12 @@ const New = ({ navigation }) => {
       AssetUtils.fromUriAsync(image.uri).then(fromUri => {
         fromUri.localUri = fromUri.uri;
         AssetUtils.resolveAsync(fromUri).then(uriResolved => {
-          console.log('uriResolved = ', uriResolved);
           navigation.navigate('Edit', { photo: uriResolved })
         });
       });
     } catch (error) {
       console.log(error);
     }
-
-    /*
-        try {
-          const value = await AsyncStorage.setItem(
-            "currentEditedImage",
-            JSON.stringify(image)
-          );
-          navigation.navigate('Edit');
-        } catch (error) {
-          console.log(error);
-        }*/
   }
 
   return (

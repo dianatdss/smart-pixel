@@ -16,8 +16,11 @@ const Gallery = ({ navigation }) => {
   async function getDataFromStorage() {
     try {
       const value = await AsyncStorage.getItem("gallery");
+      
       if (value !== null) {
-        setImages(value.split(",").map(item => JSON.parse(item)));
+        let newValue = value.split(",").map(item => JSON.parse(item)).filter(item => item !== null);
+        console.log(newValue)
+        setImages(newValue);
       }
     } catch (error) {
       console.log(error);
@@ -25,13 +28,14 @@ const Gallery = ({ navigation }) => {
   }
 
   async function redirectToEditPhoto(image) {
+
     try {
-    AssetUtils.fromUriAsync(image).then(fromUri => {
+      AssetUtils.fromUriAsync(image).then(fromUri => {
         fromUri.localUri = fromUri.uri;
         AssetUtils.resolveAsync(fromUri).then(uriResolved => {
-            navigation.navigate('Edit', { photo: uriResolved })
+          navigation.navigate('Edit', { photo: uriResolved })
         });
-    });
+      });
     } catch (error) {
       console.log(error);
     }

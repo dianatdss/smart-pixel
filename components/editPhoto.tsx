@@ -2,21 +2,14 @@
 create on localStorage an 'current Edited Photo' key and always change that value,
 according to what you select from new/gallery
 make sure that when you do that, you remove that photo from gallery storage
-
 on this component, extract that image and start editing it
-
 after that, you have two options --create 2 buttons -- : 
 - save it to gallery & remove from current Edited Photo
 - don't save it: readd the unedited photo to gallery 
 and also remove it from current Edited Photo
-
 */
-<<<<<<< HEAD
-import React, { useState, createRef, useEffect } from "react";
-=======
 
 import React, { useState } from "react";
->>>>>>> a4a16cb34d210aaa76cca23282d5536cacc5d35e
 import { AsyncStorage } from "react-native";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import ExpoPixi, { PIXI } from "expo-pixi";
@@ -61,7 +54,6 @@ const EditPhoto = ({ route, navigation }) => {
   // for filters:
   const [index, setIndex] = useState(0);
   const [filter, setFilters] = useState(filters[0]);
-  const filterImageRef = createRef();
 
 
   async function getCurrentImageFromStorage() {
@@ -79,39 +71,20 @@ const EditPhoto = ({ route, navigation }) => {
  
 
   function changeFilter() {
-    setIndex(index + 1);
+    setIndex((index + 1)%filters.length);
     setFilters(filters[index]);
-<<<<<<< HEAD
-
-=======
->>>>>>> a4a16cb34d210aaa76cca23282d5536cacc5d35e
   }
 
 
   return (
     <View style={styles.container}>
-<<<<<<< HEAD
-=======
       <TouchableOpacity style={styles.touchable} onPress={() => getCurrentImageFromStorage()}>
         <Text> get image </Text>
       </TouchableOpacity>
->>>>>>> a4a16cb34d210aaa76cca23282d5536cacc5d35e
       <TouchableOpacity
         style={styles.touchable}
         onPress={() => {
           changeFilter();
-<<<<<<< HEAD
-        }}>
-        <Text> change filter </Text>
-      </TouchableOpacity>
-      {photo &&
-        <ExpoPixi.FilterImage
-          source={photo}
-          resizeMode={'cover'}
-          style={styles.image}
-          filters={filter}
-        />}
-=======
         }}
       >
         <Text> change filter </Text>
@@ -123,7 +96,6 @@ const EditPhoto = ({ route, navigation }) => {
         style={styles.image}
         filters={filter}
       />
->>>>>>> a4a16cb34d210aaa76cca23282d5536cacc5d35e
     </View>
   );
 };
