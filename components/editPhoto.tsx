@@ -13,9 +13,11 @@ import React, { useState } from "react";
 import { AsyncStorage } from "react-native";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import ExpoPixi, { PIXI } from "expo-pixi";
+import ViewPager from '@react-native-community/viewpager';
 
 
 const filters = [
+  {},
   new PIXI.filters.ColorReplaceFilter(0x000000, 0xff0000),
   new PIXI.filters.DotFilter(0.5),
   new PIXI.filters.EmbossFilter(),
@@ -55,44 +57,41 @@ const EditPhoto = ({ route, navigation }) => {
   const [index, setIndex] = useState(0);
   const [filter, setFilters] = useState(filters[0]);
 
-
-  async function getCurrentImageFromStorage() {
-    try {
-      const value = await AsyncStorage.getItem("currentEditedImage");
-      if (value !== null) {
-        setImage(JSON.parse(value));
-        console.log(image);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-
-
-  function changeFilter() {
-    setIndex((index + 1) % filters.length);
+  function onPageSelected (e)  {
+    setIndex(e.nativeEvent.position);
     setFilters(filters[index]);
-  }
-
+  };
 
   return (
     <View style={styles.container}>
  
-      <TouchableOpacity
-        style={styles.touchable}
-        onPress={() => {
-          changeFilter();
-        }}
-      >
-        <Text> change filter </Text>
-      </TouchableOpacity>
       <ExpoPixi.FilterImage
         source={photo}
         style={styles.image}
         resizeMode={"contain"}
         filters={filter}
       />
+   <ViewPager pageMargin={10} onPageSelected={ (event) => onPageSelected(event)} style={styles.viewPager} initialPage={0}>
+      <View style={styles.viewPage} key="1">
+        <Text>First page</Text>
+      </View>
+      <View style={styles.viewPage} key="2">
+        <Text>Second page</Text>
+      </View>
+      
+      <View style={styles.viewPage} key="3">
+        <Text>3 page</Text>
+      </View>
+      
+      <View style={styles.viewPage} key="4">
+        <Text>4 page</Text>
+      </View>
+      
+      <View style={styles.viewPage} key="5">
+        <Text>5 page</Text>
+      </View>
+    </ViewPager>
+
     </View>
   );
 };
@@ -116,5 +115,12 @@ const styles = StyleSheet.create({
     height: '100%',
     flex: 1,
     backgroundColor: 'white',
+  },
+  viewPager: {
+    height: 50,
+    
+  },
+  viewPage: {
+    backgroundColor: 'red'
   }
 });
