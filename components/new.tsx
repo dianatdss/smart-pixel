@@ -7,28 +7,29 @@ import AssetUtils from 'expo-asset-utils';
 
 
 const New = ({ navigation }) => {
-  const [image, setState] = useState(null);
+  const [image, setImage] = useState(null);
+
   async function storeDataToStorage(image) {
     try {
       let value = await AsyncStorage.getItem("gallery");
       const newImage = JSON.stringify(image);
       value = value ? value.concat(",", newImage) : newImage;
-      await AsyncStorage.setItem("gallery", newImage);
+      await AsyncStorage.setItem("gallery", value);
     } catch (error) {
       console.log(error);
     }
   }
+
   async function pickImageFromGallery() {
     ImagePicker.requestCameraRollPermissionsAsync();
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1
     });
     if (!result.cancelled) {
-      setState(result);
+      setImage(result);
       storeDataToStorage(result.uri);
     }
   }
@@ -39,11 +40,10 @@ const New = ({ navigation }) => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1
     });
     if (!result.cancelled) {
-      setState(result);
+      setImage(result);
       storeDataToStorage(result.uri);
     }
   }
@@ -70,11 +70,13 @@ const New = ({ navigation }) => {
         color="#000"
         onPress={() => navigation.toggleDrawer()}
       />
+      <View style={styles.buttonContainer}>
       <View style={styles.button}>
         <Button title="Open gallery" onPress={() => pickImageFromGallery()} />
       </View>
       <View style={styles.button}>
         <Button title="Open cameraa" onPress={() => pickImageFromCamera()} />
+      </View>
       </View>
 
       {image && (
@@ -93,14 +95,18 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     marginHorizontal: 20
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginHorizontal: -3
+  },
   image: {
-    borderRadius: 30,
+    borderRadius: 10,
     width: 150,
     height: 150
   },
   button: {
     width: "50%",
-    borderRadius: 30,
-    marginVertical: 5
+    marginVertical: 5,
+    marginHorizontal: 3
   }
 });

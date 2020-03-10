@@ -19,7 +19,6 @@ const Gallery = ({ navigation }) => {
       
       if (value !== null) {
         let newValue = value.split(",").map(item => JSON.parse(item)).filter(item => item !== null);
-        console.log(newValue)
         setImages(newValue);
       }
     } catch (error) {
@@ -59,7 +58,8 @@ const Gallery = ({ navigation }) => {
             <Image source={{ uri: item }} style={styles.image} />
           </TouchableOpacity>
         )}
-       
+        
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );

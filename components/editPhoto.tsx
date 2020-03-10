@@ -68,19 +68,17 @@ const EditPhoto = ({ route, navigation }) => {
     }
   }
 
- 
+
 
   function changeFilter() {
-    setIndex((index + 1)%filters.length);
+    setIndex((index + 1) % filters.length);
     setFilters(filters[index]);
   }
 
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.touchable} onPress={() => getCurrentImageFromStorage()}>
-        <Text> get image </Text>
-      </TouchableOpacity>
+ 
       <TouchableOpacity
         style={styles.touchable}
         onPress={() => {
@@ -89,11 +87,10 @@ const EditPhoto = ({ route, navigation }) => {
       >
         <Text> change filter </Text>
       </TouchableOpacity>
-
       <ExpoPixi.FilterImage
         source={photo}
-        resizeMode={"cover"}
         style={styles.image}
+        resizeMode={"contain"}
         filters={filter}
       />
     </View>
@@ -115,8 +112,9 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   image: {
-    width: 100,
-    height: 100,
-    flex: 1
+    width: '100%',
+    height: '100%',
+    flex: 1,
+    backgroundColor: 'white',
   }
 });
