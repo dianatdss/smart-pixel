@@ -92,23 +92,6 @@ export default class HelloWorldApp extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "orange"
-  },
-  touchable: {
-    flex: 1,
-    backgroundColor: "green"
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    flex: 1,
-    backgroundColor: "white"
-  }
-});
-
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);

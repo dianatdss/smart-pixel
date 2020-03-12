@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { AsyncStorage } from "react-native";
-import { View, Button, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import * as ImagePicker from "expo-image-picker";
 import AssetUtils from 'expo-asset-utils';
+import * as styleConstants from '../utils/styles'
 
 
 const New = ({ navigation }) => {
@@ -71,12 +72,12 @@ const New = ({ navigation }) => {
         onPress={() => navigation.toggleDrawer()}
       />
       <View style={styles.buttonContainer}>
-      <View style={styles.button}>
-        <Button title="Open gallery" onPress={() => pickImageFromGallery()} />
-      </View>
-      <View style={styles.button}>
-        <Button title="Open cameraa" onPress={() => pickImageFromCamera()} />
-      </View>
+      <TouchableOpacity style={styles.button} onPress={() => pickImageFromGallery()} >
+        <Text style={styles.buttonText}>Open gallery  </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => pickImageFromCamera()} >
+        <Text style={styles.buttonText}>Open camera  </Text>
+      </TouchableOpacity>
       </View>
 
       {image && (
@@ -100,13 +101,26 @@ const styles = StyleSheet.create({
     marginHorizontal: -3
   },
   image: {
-    borderRadius: 10,
-    width: 150,
-    height: 150
+    borderRadius: styleConstants.gridGutterWidth / 3,
+    width: "100%",
+    height: "70%",
+    marginVertical: styleConstants.padding.md,
+    borderColor: styleConstants.colors.primary,
+    borderWidth: 2,
   },
   button: {
-    width: "50%",
-    marginVertical: 5,
-    marginHorizontal: 3
+    backgroundColor: styleConstants.colors.white,
+    width: styleConstants.gridGutterWidth * 5,
+    borderRadius: styleConstants.gridGutterWidth,
+    borderColor: styleConstants.colors.primary,
+    borderWidth: 2,
+    height: styleConstants.gridGutterWidth * 1.5,
+    justifyContent: "center",
+    marginHorizontal: styleConstants.padding.sm / 2
+  },
+  buttonText: {
+    fontSize: styleConstants.fonts.md,
+    color: styleConstants.colors.primary,
+    textAlign: 'center'
   }
 });
