@@ -1,34 +1,36 @@
 import React, { useState } from "react";
 import { AsyncStorage } from "react-native";
-import { View, Button, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import * as ImagePicker from "expo-image-picker";
 import AssetUtils from 'expo-asset-utils';
+import * as styleConstants from '../utils/styles'
 
 
 const New = ({ navigation }) => {
-  const [image, setState] = useState(null);
+  const [image, setImage] = useState(null);
+
   async function storeDataToStorage(image) {
     try {
       let value = await AsyncStorage.getItem("gallery");
       const newImage = JSON.stringify(image);
       value = value ? value.concat(",", newImage) : newImage;
-      await AsyncStorage.setItem("gallery", newImage);
+      await AsyncStorage.setItem("gallery", value);
     } catch (error) {
       console.log(error);
     }
   }
+
   async function pickImageFromGallery() {
     ImagePicker.requestCameraRollPermissionsAsync();
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1
     });
     if (!result.cancelled) {
-      setState(result);
+      setImage(result);
       storeDataToStorage(result.uri);
     }
   }
@@ -39,11 +41,10 @@ const New = ({ navigation }) => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1
     });
     if (!result.cancelled) {
-      setState(result);
+      setImage(result);
       storeDataToStorage(result.uri);
     }
   }
@@ -70,11 +71,13 @@ const New = ({ navigation }) => {
         color="#000"
         onPress={() => navigation.toggleDrawer()}
       />
-      <View style={styles.button}>
-        <Button title="Open gallery" onPress={() => pickImageFromGallery()} />
-      </View>
-      <View style={styles.button}>
-        <Button title="Open cameraa" onPress={() => pickImageFromCamera()} />
+      <View style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.button} onPress={() => pickImageFromGallery()} >
+        <Text style={styles.buttonText}>Open gallery  </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => pickImageFromCamera()} >
+        <Text style={styles.buttonText}>Open camera  </Text>
+      </TouchableOpacity>
       </View>
 
       {image && (
@@ -93,14 +96,31 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     marginHorizontal: 20
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginHorizontal: -3
+  },
   image: {
-    borderRadius: 30,
-    width: 150,
-    height: 150
+    borderRadius: styleConstants.gridGutterWidth / 3,
+    width: "100%",
+    height: "70%",
+    marginVertical: styleConstants.padding.md,
+    borderColor: styleConstants.colors.primary,
+    borderWidth: 2,
   },
   button: {
-    width: "50%",
-    borderRadius: 30,
-    marginVertical: 5
+    backgroundColor: styleConstants.colors.white,
+    width: styleConstants.gridGutterWidth * 5,
+    borderRadius: styleConstants.gridGutterWidth,
+    borderColor: styleConstants.colors.primary,
+    borderWidth: 2,
+    height: styleConstants.gridGutterWidth * 1.5,
+    justifyContent: "center",
+    marginHorizontal: styleConstants.padding.sm / 2
+  },
+  buttonText: {
+    fontSize: styleConstants.fonts.md,
+    color: styleConstants.colors.primary,
+    textAlign: 'center'
   }
 });

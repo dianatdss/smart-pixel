@@ -10,42 +10,13 @@ and also remove it from current Edited Photo
 */
 
 import React, { useState } from "react";
-import { AsyncStorage } from "react-native";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import ExpoPixi, { PIXI } from "expo-pixi";
-
-
-const filters = [
-  new PIXI.filters.ColorReplaceFilter(0x000000, 0xff0000),
-  new PIXI.filters.DotFilter(0.5),
-  new PIXI.filters.EmbossFilter(),
-  new PIXI.filters.PixelateFilter(),
-  new PIXI.filters.CrossHatchFilter(),
-  new PIXI.filters.NoiseFilter(),
-  new PIXI.filters.OldFilmFilter(),
-  new PIXI.filters.RGBSplitFilter(),
-
-  new PIXI.filters.GlowFilter(30, 2, 0.5, 0xff0000),
-  new PIXI.filters.BulgePinchFilter([0.5, 0.2], 300, 1),
-  new PIXI.filters.MotionBlurFilter([54, 40], 15, 0),
-  new PIXI.filters.DropShadowFilter(),
-  new PIXI.filters.AdvancedBloomFilter(),
-  new PIXI.filters.BlurFilter(),
-  new PIXI.filters.TwistFilter(400, 4, 20),
-  new PIXI.filters.BloomFilter(),
-  new PIXI.filters.OutlineFilter(20, 0x00fc00, 1),
-  new PIXI.filters.ZoomBlurFilter()
-
-  // new PIXI.filters.AlphaFilter(),
-  // new PIXI.filters.AsciiFilter(),
-  // new PIXI.filters.ConvolutionFilter(),
-  // new PIXI.filters.DisplacementFilter(),
-  // new PIXI.filters.TiltShiftFilter(),
-  // new PIXI.filters.GodrayFilter(),
-  // new PIXI.filters.SimpleLightmapFilter(),
-  // new PIXI.filters.MultiColorReplaceFilter(),
-  // new PIXI.filters.ShockwaveFilter(),
-];
+import { View, StyleSheet, TouchableOpacity, Text, Slider } from "react-native";
+import ExpoPixi from "expo-pixi";
+import ViewPager from '@react-native-community/viewpager';
+import { captureRef } from 'react-native-view-shot';
+import * as MediaLibrary from 'expo-media-library';
+import { filters } from '../utils/filters'
+import * as styleConstants from '../utils/styles'
 
 const EditPhoto = ({ route, navigation }) => {
   const { photo } = route.params;
@@ -55,46 +26,59 @@ const EditPhoto = ({ route, navigation }) => {
   const [index, setIndex] = useState(0);
   const [filter, setFilters] = useState(filters[0]);
 
+  const [ref, setRef] = useState();
+  function onPageSelected(e) {
+    setIndex(e.nativeEvent.position);
+    setFilters(filters[e.nativeEvent.position].filter);
+  };
 
-  async function getCurrentImageFromStorage() {
+  function setFilterImageRef(c) {
+    setRef(c);
+  }
+
+
+  async function _saveToCameraRollAsync() {
     try {
-      const value = await AsyncStorage.getItem("currentEditedImage");
-      if (value !== null) {
-        setImage(JSON.parse(value));
-        console.log(image);
-      }
-    } catch (error) {
-      console.log(error);
+      let result = await captureRef(ref, {
+        format: 'png',
+      });
+      MediaLibrary.requestPermissionsAsync()
+      await MediaLibrary.saveToLibraryAsync(result);
     }
-  }
-
- 
-
-  function changeFilter() {
-    setIndex((index + 1)%filters.length);
-    setFilters(filters[index]);
-  }
-
+    catch (snapshotError) {
+      console.error(snapshotError);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.touchable} onPress={() => getCurrentImageFromStorage()}>
-        <Text> get image </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.touchable}
-        onPress={() => {
-          changeFilter();
-        }}
-      >
-        <Text> change filter </Text>
-      </TouchableOpacity>
 
       <ExpoPixi.FilterImage
         source={photo}
-        resizeMode={"cover"}
+        ref={(c) => setFilterImageRef(c)}
         style={styles.image}
+        resizeMode={"contain"}
         filters={filter}
+      />
+
+      <ViewPager pageMargin={10} onPageSelected={(event) => onPageSelected(event)} style={styles.viewPager} initialPage={0}>
+        {filters.map((item, key) => (
+          <TouchableOpacity style={styles.viewButton} key={key}>
+            <Text key={key + 'a'} style={styles.buttonText}>{item.name}  </Text>
+          </TouchableOpacity>
+        )
+        )}
+      </ViewPager>
+      <TouchableOpacity style={styles.button} onPress={() => _saveToCameraRollAsync()} >
+        <Text style={styles.buttonText}>Save  </Text>
+      </TouchableOpacity>
+      <Slider
+        style={{ width: "100%", height: 60 }}
+        minimumValue={0}
+        maximumValue={1}
+        minimumTrackTintColor={styleConstants.colors.secondary}
+        thumbTintColor={styleConstants.colors.secondary}
+        maximumTrackTintColor="#000000"
       />
     </View>
   );
@@ -103,20 +87,37 @@ const EditPhoto = ({ route, navigation }) => {
 export default EditPhoto;
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 30,
-    marginHorizontal: 20,
+    marginVertical: styleConstants.padding.lg,
+    marginHorizontal: styleConstants.padding.md,
     flex: 1,
-    backgroundColor: "gray"
-  },
-  touchable: {
-    height: 50,
-    width: "100%",
-    backgroundColor: "green",
-    justifyContent: "center"
   },
   image: {
-    width: 100,
-    height: 100,
-    flex: 1
+    flex: 1,
+  },
+  viewPager: {
+    height: styleConstants.padding.md * 2,
+
+  },
+  viewButton: {
+    backgroundColor: styleConstants.colors.white,
+    borderRadius: styleConstants.gridGutterWidth,
+    borderColor: styleConstants.colors.primary,
+    borderWidth: 2,
+    height: styleConstants.gridGutterWidth * 1.5,
+    justifyContent: "center"
+  },
+  button: {
+    backgroundColor: styleConstants.colors.white,
+    width: styleConstants.gridGutterWidth * 5,
+    borderRadius: styleConstants.gridGutterWidth,
+    borderColor: styleConstants.colors.primary,
+    borderWidth: 2,
+    height: styleConstants.gridGutterWidth * 1.5,
+    justifyContent: "center"
+  },
+  buttonText: {
+    fontSize: styleConstants.fonts.md,
+    color: styleConstants.colors.primary,
+    textAlign: 'center'
   }
 });

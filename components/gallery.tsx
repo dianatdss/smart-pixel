@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import {
   View,
   StyleSheet,
-  Button,
+  Text,
   Image,
   TouchableOpacity,
   FlatList, SafeAreaView
 } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import { AsyncStorage } from "react-native";
-import AssetUtils from 'expo-asset-utils'
+import AssetUtils from 'expo-asset-utils';
+import * as styleConstants from '../utils/styles'
+
 const Gallery = ({ navigation }) => {
   const [images, setImages] = useState([]);
 
@@ -19,7 +21,6 @@ const Gallery = ({ navigation }) => {
       
       if (value !== null) {
         let newValue = value.split(",").map(item => JSON.parse(item)).filter(item => item !== null);
-        console.log(newValue)
         setImages(newValue);
       }
     } catch (error) {
@@ -44,13 +45,15 @@ const Gallery = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Icon
+    
         name="three-bars"
         size={30}
         color="#000"
         onPress={() => navigation.toggleDrawer()}
       />
-      <Button title="Get data" onPress={() => getDataFromStorage()} />
-
+      <TouchableOpacity style={styles.button} onPress={() => getDataFromStorage()} >
+      <Text style={styles.buttonText}>Get data  </Text>
+      </TouchableOpacity>
       <FlatList
         data={images}
         numColumns={2}
@@ -59,7 +62,8 @@ const Gallery = ({ navigation }) => {
             <Image source={{ uri: item }} style={styles.image} />
           </TouchableOpacity>
         )}
-       
+        
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );
@@ -68,13 +72,29 @@ export default Gallery;
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 30,
-    marginHorizontal: 20
+    marginVertical: styleConstants.padding.lg,
+    marginHorizontal: styleConstants.padding.sm
   },
   image: {
-    borderRadius: 10,
-    width: 140,
-    height: 140,
-    margin: 10
+    borderRadius: styleConstants.gridGutterWidth / 3,
+    width: (styleConstants.dimensions.fullWidth - 60) / 2,
+    height: styleConstants.dimensions.fullWidth / 2,
+    margin: styleConstants.padding.sm,
+    borderWidth: 2,
+    borderColor: styleConstants.colors.primary
+  },
+  button: {
+    backgroundColor: styleConstants.colors.white,
+    width: styleConstants.gridGutterWidth * 5,
+    borderRadius: styleConstants.gridGutterWidth,
+    borderColor: styleConstants.colors.primary,
+    borderWidth: 2,
+    height: styleConstants.gridGutterWidth * 1.5,
+    justifyContent: "center"
+  },
+  buttonText: {
+    fontSize: styleConstants.fonts.md,
+    color: styleConstants.colors.primary,
+    textAlign: 'center'
   }
 });
