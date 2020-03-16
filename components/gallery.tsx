@@ -34,7 +34,7 @@ const Gallery = ({ navigation }) => {
       AssetUtils.fromUriAsync(image).then(fromUri => {
         fromUri.localUri = fromUri.uri;
         AssetUtils.resolveAsync(fromUri).then(uriResolved => {
-          navigation.navigate('Edit', { photo: uriResolved })
+          navigation.navigate('Edit', { photo: uriResolved, indexParam: 0 })
         });
       });
     } catch (error) {
