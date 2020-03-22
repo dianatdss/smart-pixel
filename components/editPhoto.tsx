@@ -17,6 +17,8 @@ import { captureRef } from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
 import { filters } from '../utils/filters'
 import * as styleConstants from '../utils/styles'
+import { StorageTypes, Routes } from '../utils/enums';
+import { AsyncStorage } from "react-native";
 
 const EditPhoto = ({ route, navigation }) => {
   const { photo } = route.params;
@@ -30,8 +32,6 @@ const EditPhoto = ({ route, navigation }) => {
   const [ref, setRef] = useState();
   const [carouselRef, setCarouselRef] = useState();
 
-
-
   function onPageSelected(value) {
     setFilters(filters[value].filter);
   };
@@ -41,32 +41,57 @@ const EditPhoto = ({ route, navigation }) => {
   }
 
   function changeValue(value) {
-    switch (index) {
-      case 2: {
-        setFilters(new PIXI.filters.DotFilter(value));
-        //setAddedFilters(addedFilters.concat(filter));
 
+    switch (index) {
+
+      case 1: {
+        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+
+        colorMatrixFilter.contrast(value);
+        setFilters(colorMatrixFilter);
+        return;
+      }
+      case 2: {
+        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+
+        colorMatrixFilter.brightness(value + 1);
+        setFilters(colorMatrixFilter);
         return;
       }
       case 3: {
-        setFilters(new PIXI.filters.EmbossFilter(value * filters[index].multiplyValue + 1));
-        // setAddedFilters(addedFilters.concat(filter));
+        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
 
+        colorMatrixFilter.greyscale(value);
+        setFilters(colorMatrixFilter);
         return;
       }
       case 4: {
-        setFilters(new PIXI.filters.PixelateFilter(value * filters[index].multiplyValue + 1));
-        //  setAddedFilters(addedFilters.concat(filter));
+        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
 
+        colorMatrixFilter.hue(value * 360);
+        setFilters(colorMatrixFilter);
         return;
       }
       case 6: {
-        setFilters(new PIXI.filters.NoiseFilter(value));
-        // setAddedFilters(addedFilters.concat(filter));
+        setFilters(new PIXI.filters.DotFilter(value));
+        return;
+      }
+      case 7: {
+        setFilters(new PIXI.filters.EmbossFilter(value * filters[index].multiplyValue + 1));
 
         return;
       }
-      case 9: {
+      case 8: {
+        setFilters(new PIXI.filters.PixelateFilter(value * filters[index].multiplyValue + 1));
+
+        return;
+      }
+      case 10: {
+        setFilters(new PIXI.filters.NoiseFilter(value));
+
+        return;
+      }
+      case 13: {
         setFirstBulgeParameter(value * 500);
         console.log(firstBulgeParameter);
         console.log(secondBulgeParameter);
@@ -75,15 +100,15 @@ const EditPhoto = ({ route, navigation }) => {
         return;
 
       }
-      case 11: {
+      case 15: {
         setFilters(new PIXI.filters.AdvancedBloomFilter({ "brightness": value * filters[index].multiplyValue }));
         return;
       }
-      case 12: {
+      case 16: {
         setFilters(new PIXI.filters.BlurFilter(value * filters[index].multiplyValue + 1));
         return;
       }
-      case 15: {
+      case 19: {
         setFilters(new PIXI.filters.ZoomBlurFilter(value * filters[index].multiplyValue));
         return;
       }
@@ -93,7 +118,7 @@ const EditPhoto = ({ route, navigation }) => {
 
   function changeSecondValue(value) {
     switch (index) {
-      case 9: {
+      case 13: {
         setSecondBulgeParameter(value);
         setFilters(new PIXI.filters.BulgePinchFilter([0.5, 0.5], firstBulgeParameter, secondBulgeParameter));
       }
@@ -108,6 +133,18 @@ const EditPhoto = ({ route, navigation }) => {
     navigation.goBack();
   }
 
+  async function storeDataToStorage(image) {
+    try {
+      let value = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
+      const newImage = JSON.stringify(image);
+      value = value ? value.concat(",", newImage) : newImage;
+      console.log(value);
+      await AsyncStorage.setItem(StorageTypes.EDITED_PHOTOS, value);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async function _saveToCameraRollAsync() {
     try {
       let result = await captureRef(ref, {
@@ -115,6 +152,7 @@ const EditPhoto = ({ route, navigation }) => {
       });
       MediaLibrary.requestPermissionsAsync()
       await MediaLibrary.saveToLibraryAsync(result);
+      await storeDataToStorage(result);
       navigateBackToGallery();
     }
     catch (snapshotError) {

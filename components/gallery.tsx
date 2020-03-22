@@ -1,24 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect , useEffect } from "react";
 import {
   View,
   StyleSheet,
-  Text,
   Image,
   TouchableOpacity,
-  FlatList, SafeAreaView
+  FlatList
 } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import { AsyncStorage } from "react-native";
 import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
-
+import { useIsFocused } from '@react-navigation/native';
+import { StorageTypes, Routes }from '../utils/enums';
 const Gallery = ({ navigation }) => {
   const [images, setImages] = useState([]);
+  const isFocused = useIsFocused();
+
+  useLayoutEffect (() => {
+    async function asyncGetDataFromStorage() {
+      await getDataFromStorage();
+    }
+    asyncGetDataFromStorage();
+  }, [isFocused])
 
   async function getDataFromStorage() {
     try {
-      const value = await AsyncStorage.getItem("gallery");
-      
+      const value = await AsyncStorage.getItem(StorageTypes.GALLERY);
+
       if (value !== null) {
         let newValue = value.split(",").map(item => JSON.parse(item)).filter(item => item !== null);
         setImages(newValue);
@@ -34,7 +42,7 @@ const Gallery = ({ navigation }) => {
       AssetUtils.fromUriAsync(image).then(fromUri => {
         fromUri.localUri = fromUri.uri;
         AssetUtils.resolveAsync(fromUri).then(uriResolved => {
-          navigation.navigate('Edit', { photo: uriResolved, indexParam: 0 })
+          navigation.navigate(Routes.EDIT, { photo: uriResolved, indexParam: 0 })
         });
       });
     } catch (error) {
@@ -45,24 +53,20 @@ const Gallery = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Icon
-    
         name="three-bars"
-        size={30}
-        color="#000"
+        size={35}
+        color={styleConstants.colors.secondary}
         onPress={() => navigation.toggleDrawer()}
       />
-      <TouchableOpacity style={styles.button} onPress={() => getDataFromStorage()} >
-      <Text style={styles.buttonText}>Get data  </Text>
-      </TouchableOpacity>
       <FlatList
         data={images}
         numColumns={2}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={ () => redirectToEditPhoto(item)}>
-            <Image source={{ uri: item }} style={styles.image} />
+          <TouchableOpacity onPress={() => redirectToEditPhoto(item)}>
+            <Image source={{ uri: item }} style={styles.image} overlayColor={'#fff'} resizeMode={'contain'}/>
           </TouchableOpacity>
         )}
-        
+
         keyExtractor={(item, index) => index.toString()}
       />
     </View>
