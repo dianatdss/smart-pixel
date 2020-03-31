@@ -5,6 +5,8 @@ import Icon from "react-native-vector-icons/Octicons";
 import * as ImagePicker from "expo-image-picker";
 import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
+import FullWidthImage from 'react-native-fullwidth-image'
+import { StorageTypes, Routes }from '../utils/enums';
 
 
 const New = ({ navigation }) => {
@@ -12,10 +14,10 @@ const New = ({ navigation }) => {
 
   async function storeDataToStorage(image) {
     try {
-      let value = await AsyncStorage.getItem("gallery");
+      let value = await AsyncStorage.getItem(StorageTypes.GALLERY);
       const newImage = JSON.stringify(image);
       value = value ? value.concat(",", newImage) : newImage;
-      await AsyncStorage.setItem("gallery", value);
+      await AsyncStorage.setItem(StorageTypes.GALLERY, value);
     } catch (error) {
       console.log(error);
     }
@@ -25,7 +27,7 @@ const New = ({ navigation }) => {
     ImagePicker.requestCameraRollPermissionsAsync();
 
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1
     });
@@ -39,7 +41,7 @@ const New = ({ navigation }) => {
     ImagePicker.requestCameraPermissionsAsync();
 
     let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1
     });
@@ -55,7 +57,7 @@ const New = ({ navigation }) => {
       AssetUtils.fromUriAsync(image.uri).then(fromUri => {
         fromUri.localUri = fromUri.uri;
         AssetUtils.resolveAsync(fromUri).then(uriResolved => {
-          navigation.navigate('Edit', { photo: uriResolved })
+          navigation.navigate(Routes.EDIT, { photo: uriResolved })
         });
       });
     } catch (error) {
@@ -67,23 +69,27 @@ const New = ({ navigation }) => {
     <View style={styles.container}>
       <Icon
         name="three-bars"
-        size={30}
-        color="#000"
+        size={35}
+        color={styleConstants.colors.secondary}
         onPress={() => navigation.toggleDrawer()}
       />
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={() => pickImageFromGallery()} >
-        <Text style={styles.buttonText}>Open gallery  </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => pickImageFromCamera()} >
-        <Text style={styles.buttonText}>Open camera  </Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => pickImageFromGallery()} >
+          <Text style={styles.buttonText}>Import from gallery  </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => pickImageFromCamera()} >
+          <Text style={styles.buttonText}>Import from camera  </Text>
+        </TouchableOpacity>
       </View>
 
       {image && (
         <TouchableOpacity onPress={() => redirectToEditPhoto()}  >
-          <Image
-            source={{ uri: image.uri }} style={styles.image} />
+          <FullWidthImage
+            overlayColor={'#fff'}
+            resizeMode={'contain'}
+            style={styles.image}
+            source={{ uri: image.uri }}
+          />
         </TouchableOpacity>
       )}
     </View>
@@ -102,8 +108,6 @@ const styles = StyleSheet.create({
   },
   image: {
     borderRadius: styleConstants.gridGutterWidth / 3,
-    width: "100%",
-    height: "70%",
     marginVertical: styleConstants.padding.md,
     borderColor: styleConstants.colors.primary,
     borderWidth: 2,
