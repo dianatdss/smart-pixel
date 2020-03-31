@@ -13,6 +13,7 @@ import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
 import { useIsFocused } from '@react-navigation/native';
 import { StorageTypes, Routes } from '../utils/enums';
+import * as Sharing from 'expo-sharing';
 
 const EditedGallery = ({ navigation }) => {
     const [images, setImages] = useState([]);
@@ -31,7 +32,6 @@ const EditedGallery = ({ navigation }) => {
 
             if (value !== null) {
                 let newValue = value.split(",").map(item => JSON.parse(item)).filter(item => item !== null);
-                console.log(newValue)
                 setImages(newValue);
             }
         } catch (error) {
@@ -68,6 +68,14 @@ const EditedGallery = ({ navigation }) => {
         }
     }
 
+    async function sharePhoto() {
+        try {
+            Sharing.shareAsync(selectedImage);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <View style={styles.container}>
             <Icon
@@ -81,7 +89,9 @@ const EditedGallery = ({ navigation }) => {
                 numColumns={2}
                 renderItem={({ item }) => (
                     <TouchableOpacity onPress={() => { setSelectedImage(item) }}>
-                        <Image source={{ uri: item }} style={styles.image} overlayColor={'#fff'} resizeMode={'contain'} />
+                        <Image source={{ uri: item }}
+                        style={[styles.image, item == selectedImage ? styles.selectedImage : {}]}
+                            overlayColor={'#fff'} resizeMode={'contain'} />
                     </TouchableOpacity>
                 )}
 
@@ -94,6 +104,10 @@ const EditedGallery = ({ navigation }) => {
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={() => deletePhoto(selectedImage)} >
                         <Text style={styles.buttonText}>Delete photo  </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button} onPress={() => sharePhoto()} >
+                        <Text style={styles.buttonText}>Share photo  </Text>
                     </TouchableOpacity>
                 </View>
             }
@@ -119,9 +133,12 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: styleConstants.colors.primary
     },
+    selectedImage: {
+        borderColor: styleConstants.colors.secondary
+    },
     button: {
         backgroundColor: styleConstants.colors.white,
-        width: styleConstants.gridGutterWidth * 5,
+        width: styleConstants.gridGutterWidth * 3,
         borderRadius: styleConstants.gridGutterWidth,
         borderColor: styleConstants.colors.primary,
         borderWidth: 2,
