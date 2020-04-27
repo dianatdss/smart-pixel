@@ -8,7 +8,6 @@ import * as styleConstants from '../utils/styles'
 import FullWidthImage from 'react-native-fullwidth-image'
 import { StorageTypes, Routes }from '../utils/enums';
 
-
 const New = ({ navigation }) => {
   const [image, setImage] = useState(null);
 
@@ -24,31 +23,52 @@ const New = ({ navigation }) => {
   }
 
   async function pickImageFromGallery() {
-    ImagePicker.requestCameraRollPermissionsAsync();
+    try {
+      let permission = await ImagePicker.getCameraRollPermissionsAsync();
 
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1
-    });
-    if (!result.cancelled) {
-      setImage(result);
-      storeDataToStorage(result.uri);
-    }
+      if (permission.granted == false) {
+      ImagePicker.requestCameraRollPermissionsAsync();
+      permission = await ImagePicker.getCameraRollPermissionsAsync();
+      }
+
+      if (permission.granted == true) {
+        let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1
+      });
+
+        if (!result.cancelled) {
+          setImage(result);
+          storeDataToStorage(result.uri);
+        }
+      }
+    } catch(e) {console.log(e)}
   }
 
   async function pickImageFromCamera() {
-    ImagePicker.requestCameraPermissionsAsync();
 
-    let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1
-    });
-    if (!result.cancelled) {
-      setImage(result);
-      storeDataToStorage(result.uri);
-    }
+    try {
+      let permission = await ImagePicker.getCameraPermissionsAsync();
+
+      if (permission.granted == false) {
+      ImagePicker.requestCameraPermissionsAsync();
+      permission = await ImagePicker.getCameraPermissionsAsync();
+      }
+
+      if (permission.granted == true) {
+        let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1
+      });
+
+        if (!result.cancelled) {
+          setImage(result);
+          storeDataToStorage(result.uri);
+        }
+      }
+    } catch(e) {console.log(e)}
   }
 
   async function redirectToEditPhoto() {
@@ -57,7 +77,7 @@ const New = ({ navigation }) => {
       AssetUtils.fromUriAsync(image.uri).then(fromUri => {
         fromUri.localUri = fromUri.uri;
         AssetUtils.resolveAsync(fromUri).then(uriResolved => {
-          navigation.navigate(Routes.EDIT, { photo: uriResolved })
+          navigation.navigate(Routes.NEW_EDIT, { photo: uriResolved })
         });
       });
     } catch (error) {

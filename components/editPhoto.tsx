@@ -137,8 +137,9 @@ const EditPhoto = ({ route, navigation }) => {
     try {
       let value = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
       const newImage = JSON.stringify(image);
+
       value = value ? value.concat(",", newImage) : newImage;
-      console.log(value);
+      console.log('Edit=', value);
       await AsyncStorage.setItem(StorageTypes.EDITED_PHOTOS, value);
     } catch (error) {
       console.log(error);

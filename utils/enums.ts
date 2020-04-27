@@ -4,8 +4,17 @@ export enum StorageTypes {
  }
 
  export enum Routes {
-     'EDIT' = 'Edit',
+    
      'GALLERY' = 'Gallery',
+     'GALLERY_MAIN' = 'Your gallery',
+     'GALLERY_EDIT' = 'Edit your picture',
+
      'NEW'= 'New',
-     'EDITED_GALLERY' = 'Your edited pics'
+     'NEW_MAIN'= 'Add a new photo',
+     'NEW_EDIT' = 'Edit new photo',
+
+     'EDITED_GALLERY' = 'Your edited pics',
+     'EDITED_GALLERY_MAIN' = 'See your edited pics',
+     'EDITED_GALLERY_EDIT' = 'Edit your photo'
+    
  }
