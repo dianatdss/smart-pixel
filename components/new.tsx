@@ -7,36 +7,6 @@ import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
 import FullWidthImage from 'react-native-fullwidth-image'
 import { StorageTypes, Routes }from '../utils/enums';
-/*
-
-registerForPushNotifications: async function() {
-  const { status: existingStatus } = await Permissions.getAsync(
-    Permissions.NOTIFICATIONS
-  );
-  let finalStatus = existingStatus;
-
-  // only ask if permissions have not already been determined, because
-  // iOS won't necessarily prompt the user a second time.
-  if (existingStatus !== "granted") {
-    // Android remote notification permissions are granted during the app
-    // install, so this will only ask on iOS
-    const { status } = await Permissions.askAsync(
-      Permissions.NOTIFICATIONS
-    );
-    finalStatus = status;
-  }
-
-  // Stop here if the user did not grant permissions
-  if (finalStatus !== "granted") {
-    return;
-  }
-
-  // Get the token that uniquely identifies this device
-  Notifications.getExpoPushTokenAsync().then(token => {
-    console.log(token);
-  });
-}
-*/
 
 const New = ({ navigation }) => {
   const [image, setImage] = useState(null);
@@ -53,31 +23,52 @@ const New = ({ navigation }) => {
   }
 
   async function pickImageFromGallery() {
-    ImagePicker.requestCameraRollPermissionsAsync();
+    try {
+      let permission = await ImagePicker.getCameraRollPermissionsAsync();
 
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1
-    });
-    if (!result.cancelled) {
-      setImage(result);
-      storeDataToStorage(result.uri);
-    }
+      if (permission.granted == false) {
+      ImagePicker.requestCameraRollPermissionsAsync();
+      permission = await ImagePicker.getCameraRollPermissionsAsync();
+      }
+
+      if (permission.granted == true) {
+        let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1
+      });
+
+        if (!result.cancelled) {
+          setImage(result);
+          storeDataToStorage(result.uri);
+        }
+      }
+    } catch(e) {console.log(e)}
   }
 
   async function pickImageFromCamera() {
-    ImagePicker.requestCameraPermissionsAsync();
 
-    let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1
-    });
-    if (!result.cancelled) {
-      setImage(result);
-      storeDataToStorage(result.uri);
-    }
+    try {
+      let permission = await ImagePicker.getCameraPermissionsAsync();
+
+      if (permission.granted == false) {
+      ImagePicker.requestCameraPermissionsAsync();
+      permission = await ImagePicker.getCameraPermissionsAsync();
+      }
+
+      if (permission.granted == true) {
+        let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1
+      });
+
+        if (!result.cancelled) {
+          setImage(result);
+          storeDataToStorage(result.uri);
+        }
+      }
+    } catch(e) {console.log(e)}
   }
 
   async function redirectToEditPhoto() {
@@ -86,7 +77,7 @@ const New = ({ navigation }) => {
       AssetUtils.fromUriAsync(image.uri).then(fromUri => {
         fromUri.localUri = fromUri.uri;
         AssetUtils.resolveAsync(fromUri).then(uriResolved => {
-          navigation.navigate(Routes.EDIT, { photo: uriResolved })
+          navigation.navigate(Routes.NEW_EDIT, { photo: uriResolved })
         });
       });
     } catch (error) {

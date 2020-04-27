@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect , useEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -11,12 +11,12 @@ import { AsyncStorage } from "react-native";
 import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
 import { useIsFocused } from '@react-navigation/native';
-import { StorageTypes, Routes }from '../utils/enums';
+import { StorageTypes, Routes } from '../utils/enums';
 const Gallery = ({ navigation }) => {
   const [images, setImages] = useState([]);
   const isFocused = useIsFocused();
 
-  useLayoutEffect (() => {
+  useLayoutEffect(() => {
     async function asyncGetDataFromStorage() {
       await getDataFromStorage();
     }
@@ -42,7 +42,7 @@ const Gallery = ({ navigation }) => {
       AssetUtils.fromUriAsync(image).then(fromUri => {
         fromUri.localUri = fromUri.uri;
         AssetUtils.resolveAsync(fromUri).then(uriResolved => {
-          navigation.navigate(Routes.EDIT, { photo: uriResolved, indexParam: 0 })
+          navigation.navigate(Routes.GALLERY_EDIT, { photo: uriResolved, indexParam: 0 })
         });
       });
     } catch (error) {
@@ -58,12 +58,14 @@ const Gallery = ({ navigation }) => {
         color={styleConstants.colors.secondary}
         onPress={() => navigation.toggleDrawer()}
       />
+
       <FlatList
+        style={styles.flatList}
         data={images}
         numColumns={2}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => redirectToEditPhoto(item)}>
-            <Image source={{ uri: item }} style={styles.image} overlayColor={'#fff'} resizeMode={'contain'}/>
+            <Image source={{ uri: item }} style={styles.image} overlayColor={'#fff'} resizeMode={'contain'} />
           </TouchableOpacity>
         )}
 
@@ -76,12 +78,17 @@ export default Gallery;
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: styleConstants.padding.lg,
-    marginHorizontal: styleConstants.padding.sm
+    marginHorizontal: styleConstants.padding.sm,
+    flex: 1
   },
+
+  flatList: {
+    marginHorizontal: -styleConstants.padding.sm
+  },
+
   image: {
     borderRadius: styleConstants.gridGutterWidth / 3,
-    width: (styleConstants.dimensions.fullWidth - 60) / 2,
+    width: (styleConstants.dimensions.fullWidth - 40) / 2,
     height: styleConstants.dimensions.fullWidth / 2,
     margin: styleConstants.padding.sm,
     borderWidth: 2,
