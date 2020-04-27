@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Diana",
-    "slug": "image-filter",
+    "slug": "smart-pixel",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
@@ -25,6 +25,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "In process",
+    "githubUrl": "https://github.com/dianatdss/smart-pixel"
   }
 }
