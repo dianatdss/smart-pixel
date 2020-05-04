@@ -1,23 +1,13 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
-import {
-    View,
-    StyleSheet,
-    Image,
-    TouchableOpacity,
-    Text,
-    FlatList
-} from "react-native";
+import React, { useLayoutEffect, useState } from "react";
+import { AsyncStorage, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
-import { AsyncStorage } from "react-native";
 import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
 import { useIsFocused } from '@react-navigation/native';
-import { StorageTypes, Routes } from '../utils/enums';
+import { Routes, StorageTypes } from '../utils/enums';
 import * as Sharing from 'expo-sharing';
-import { ScrollView } from "react-native-gesture-handler";
 
-
-const EditedGallery = ({ navigation }) => {
+const EditedGallery = ({navigation}) => {
     const [images, setImages] = useState([]);
     const isFocused = useIsFocused();
     const [selectedImage, setSelectedImage] = useState(null);
@@ -25,35 +15,30 @@ const EditedGallery = ({ navigation }) => {
         async function asyncGetDataFromStorage() {
             await getDataFromStorage();
         }
+
         asyncGetDataFromStorage();
     }, [isFocused]);
 
     async function getDataFromStorage() {
 
         try {
-            const value = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
-            console.log('Edited gallery = ', value)
+            var value = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
             if (value !== null) {
-                let newValue = value.split(",").map(item => JSON.parse(item)).filter(item => item !== null);
+                let newValue = value.split(",").map(item => JSON.parse(item))
+                    .filter(item => item !== null);
                 setImages(newValue);
             }
         } catch (error) {
-            console.log(error);
+            console.log("FROM EDITED GALLERY:", error);
         }
     }
 
-
-    async function deletePhoto(image) {
+    async function deletePhoto() {
         try {
-            let value = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
-
-            if (value !== null) {
-                let newValue = value.split(",").map(item => JSON.parse(item)).filter(item => item !== image);
-                setImages(newValue);
-
-                AsyncStorage.setItem(StorageTypes.EDITED_PHOTOS, JSON.stringify(newValue));
-                setSelectedImage(null);
-            }
+            let img = images.filter(item => item !== selectedImage);
+            setImages(img);
+            AsyncStorage.setItem(StorageTypes.EDITED_PHOTOS, JSON.stringify(img));
+            setSelectedImage(null);
         } catch (error) {
             console.log(error);
         }
@@ -65,7 +50,7 @@ const EditedGallery = ({ navigation }) => {
             AssetUtils.fromUriAsync(selectedImage).then(fromUri => {
                 fromUri.localUri = fromUri.uri;
                 AssetUtils.resolveAsync(fromUri).then(uriResolved => {
-                    navigation.navigate(Routes.EDITED_GALLERY_EDIT, { photo: uriResolved, indexParam: 0 })
+                    navigation.navigate(Routes.EDITED_GALLERY_EDIT, {photo: uriResolved, indexParam: 0})
                 });
             });
         } catch (error) {
@@ -91,39 +76,37 @@ const EditedGallery = ({ navigation }) => {
                     color={styleConstants.colors.secondary}
                     onPress={() => navigation.toggleDrawer()}
                 />
-
                 <FlatList
                     style={styles.flatList}
                     data={images}
                     numColumns={2}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => { setSelectedImage(item) }}>
-                            <Image source={{ uri: item }}
-                                style={[styles.image, item == selectedImage ? styles.selectedImage : {}]}
-                                overlayColor={'#fff'} resizeMode={'contain'} />
+                    renderItem={({item}) => (
+                        <TouchableOpacity onPress={() => {
+                            setSelectedImage(item)
+                        }}>
+                            <Image source={{uri: item}}
+                                   style={[styles.image, item == selectedImage ? styles.selectedImage : {}]}
+                                   resizeMode={'contain'}/>
                         </TouchableOpacity>
                     )}
-
                     keyExtractor={(item, index) => index.toString()}
                 />
-
-
             </View>
 
             <View style={styles.c2}>
                 {selectedImage &&
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button} onPress={() => redirectToEditPhoto()} >
-                            <Text style={styles.buttonText}>Edit photo </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={() => deletePhoto(selectedImage)} >
-                            <Text style={styles.buttonText}>Delete photo  </Text>
-                        </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={() => redirectToEditPhoto()}>
+                        <Text style={styles.buttonText}>Edit photo </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={() => deletePhoto()}>
+                        <Text style={styles.buttonText}>Delete photo </Text>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.button} onPress={() => sharePhoto()} >
-                            <Text style={styles.buttonText}>Share photo  </Text>
-                        </TouchableOpacity>
-                    </View>
+                    <TouchableOpacity style={styles.button} onPress={() => sharePhoto()}>
+                        <Text style={styles.buttonText}>Share photo </Text>
+                    </TouchableOpacity>
+                </View>
                 }
             </View>
         </View>
