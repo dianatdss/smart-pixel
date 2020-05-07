@@ -38,7 +38,7 @@ const Gallery = ({navigation}) => {
 
             }
         } catch (error) {
-            console.log("FROM GALLERY:", error);
+            console.log( error);
         }
     }
 
