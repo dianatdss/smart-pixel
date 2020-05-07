@@ -87,7 +87,7 @@ browniFilter.browni(1);
 
 const hueFilter = new PIXI.filters.ColorMatrixFilter();
 hueFilter.hue(180);
-export const filters = [
+/*export const filters = [
   { "name": "None", "filter": {}, "hasSlider": false },
 
   { "name": "Contrast", "filter": {}, "hasSlider": true},
@@ -127,13 +127,13 @@ export const filters = [
   // new PIXI.filters.SimpleLightmapFilter(),
   // new PIXI.filters.MultiColorReplaceFilter(),
   // new PIXI.filters.ShockwaveFilter(),
-];
+];*/
 export const importedBasicFilters = [
   { "name": "None", "filter": {}, "hasSlider": false },
-  { "name": "Contrast", "filter": contrastFilter, "hasSlider": true},
-  { "name": "Brightness", "filter": brightnessFilter, "hasSlider": true},
-  { "name": "Greyscale", "filter": greyscale, "hasSlider": true},
-  { "name": "Hue", "filter": hueFilter, "hasSlider": true, "multiplyValue": 360},
+  { "name": "Contrast", "filter": {}, "hasSlider": true},
+  { "name": "Brightness", "filter": {}, "hasSlider": true},
+  { "name": "Greyscale", "filter": {}, "hasSlider": true},
+  { "name": "Hue", "filter": {}, "hasSlider": true, "multiplyValue": 360},
 ];
 
 

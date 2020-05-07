@@ -257,7 +257,7 @@ const EditPhoto = ({route, navigation}) => {
                         renderItem={_renderItem}
                         sliderWidth={300}
                         itemWidth={300}
-                        firstItem={1}
+                        firstItem={0}
                         containerCustomStyle={{flexGrow: 0}}
                         onSnapToItem={() => onNextPage(true)}
                     />
@@ -288,7 +288,7 @@ const EditPhoto = ({route, navigation}) => {
                         renderItem={_renderItem}
                         sliderWidth={300}
                         itemWidth={300}
-                        firstItem={1}
+                        firstItem={0}
                         containerCustomStyle={{flexGrow: 0}}
                         onSnapToItem={() => onNextPage(false)}
                     />

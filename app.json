@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Diana",
+    "name": "Smart Pixel",
     "slug": "smart-pixel",
     "privacy": "public",
     "sdkVersion": "36.0.0",
@@ -24,7 +24,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "diana.tudosa.licenta",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "diana.tudosa.licenta",
+      "versionCode": 1
     },
     "description": "In process",
     "githubUrl": "https://github.com/dianatdss/smart-pixel"
