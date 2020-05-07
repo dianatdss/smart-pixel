@@ -5,273 +5,388 @@ make sure that when you do that, you remove that photo from gallery storage
 on this component, extract that image and start editing it
 after that, you have two options --create 2 buttons -- : 
 - save it to gallery & remove from current Edited Photo
-- don't save it: readd the unedited photo to gallery 
+- don't save it: readd the unedited photo to gallery
 and also remove it from current Edited Photo
 */
 
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Text, Slider } from "react-native";
+/*
+* vor fi doua tipuri de filre: filtre basic si filtre custom
+* filtrele basic sunt salvate intr-un array
+* filtrul basic e doar unul
+*
+* vor fi doua butoane:
+*  - unul pentru sliderul care deschide filtre basic carousel
+*  - unul pentru sliderul care deschide filtre custom carousel
+* un buton face trigger celuilalt
+*
+*
+* */
+import React, { useState } from "react";
+import { AsyncStorage, Button, Slider, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ExpoPixi, { PIXI } from "expo-pixi";
 import Carousel from 'react-native-snap-carousel';
 import { captureRef } from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
-import { filters } from '../utils/filters'
+import { importedBasicFilters, importedCustomFilters } from '../utils/filters'
 import * as styleConstants from '../utils/styles'
-import { StorageTypes, Routes } from '../utils/enums';
-import { AsyncStorage } from "react-native";
+import { StorageTypes } from '../utils/enums';
 
-const EditPhoto = ({ route, navigation }) => {
-  const { photo } = route.params;
-  // for filters:
-  const [index, setIndex] = useState(0);
-  const [filter, setFilters] = useState(filters[0]);
+const EditPhoto = ({route, navigation}) => {
+        const {photo} = route.params;
 
-  const [firstBulgeParameter, setFirstBulgeParameter] = useState(500);
-  const [secondBulgeParameter, setSecondBulgeParameter] = useState(1);
+        const [basicIndex, setBasicIndex] = useState(0);
+        const [customIndex, setCustomIndex] = useState(0);
 
-  const [ref, setRef] = useState();
-  const [carouselRef, setCarouselRef] = useState();
+        const [filter, setFilters] = useState([importedCustomFilters[0].filter]);
+        const [basicFilter, setBasicFilters] = useState(importedBasicFilters.map(filter => filter.filter));
+        const [customFilter, setCustomFilter] = useState(importedCustomFilters[0].filter);
 
-  function onPageSelected(value) {
-    setFilters(filters[value].filter);
-  };
+        const [firstBulgeParameter, setFirstBulgeParameter] = useState(500);
+        const [secondBulgeParameter, setSecondBulgeParameter] = useState(1);
 
-  function setFilterImageRef(c) {
-    setRef(c);
-  }
+        const [ref, setRef] = useState();
+        const [basicCarouselRef, setBasicCarouselRef] = useState();
+        const [customCarouselRef, setCustomCarouselRef] = useState();
 
-  function changeValue(value) {
+        const [isBasicFilterDisplayed, setFilterDisplay] = useState(true);
 
-    switch (index) {
+        function setFilterImageRef(c) {
+            setRef(c);
+        };
 
-      case 1: {
-        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+        function changeValue(value, isBasicFilters = false) {
+            if (isBasicFilters) {
+                switch (basicIndex) {
+                    case 1: {
+                        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+                        colorMatrixFilter.contrast(value);
+                        // TODO: setBasicFilters actually add to the array
+                        var tempBasicFilter = basicFilter;
+                        tempBasicFilter[basicIndex] = colorMatrixFilter;
+                        setBasicFilters(tempBasicFilter);
 
-        colorMatrixFilter.contrast(value);
-        setFilters(colorMatrixFilter);
-        return;
-      }
-      case 2: {
-        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+                        updateFilters();
+                        return;
+                    }
+                    case 2: {
+                        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+                        colorMatrixFilter.brightness(value + 1);
+                        var tempBasicFilter = basicFilter;
+                        tempBasicFilter[basicIndex] = colorMatrixFilter;
+                        setBasicFilters(tempBasicFilter);
+                        updateFilters();
+                        return;
+                    }
+                    case 3: {
+                        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+                        colorMatrixFilter.greyscale(value);
+                        var tempBasicFilter = basicFilter;
+                        tempBasicFilter[basicIndex] = colorMatrixFilter;
+                        tempBasicFilter[4] = {};
+                        setBasicFilters(tempBasicFilter);
+                        updateFilters();
+                        return;
+                    }
+                    case 4: {
+                        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+                        colorMatrixFilter.hue(value * 360);
+                        var tempBasicFilter = basicFilter;
+                        tempBasicFilter[3] = {};
+                        tempBasicFilter[basicIndex] = colorMatrixFilter;
+                        setBasicFilters(tempBasicFilter);
+                        updateFilters();
+                        return;
+                    }
+                    default:
+                        return;
+                }
+            } else {
+                switch (customIndex) {
+                    case 2: {
+                        setCustomFilter(new PIXI.filters.DotFilter(value));
+                        updateFilters();
+                        return;
+                    }
+                    case 3: {
+                        setCustomFilter(new PIXI.filters.EmbossFilter(value * importedCustomFilters[customIndex].multiplyValue + 1));
+                        updateFilters();
+                        return;
+                    }
+                    case 4: {
+                        setCustomFilter(new PIXI.filters.PixelateFilter(value * importedCustomFilters[customIndex].multiplyValue + 1));
+                        updateFilters();
+                        return;
+                    }
+                    case 6: {
+                        setCustomFilter(new PIXI.filters.NoiseFilter(value));
+                        updateFilters();
+                        return;
+                    }
+                    case 9: {
+                        setFirstBulgeParameter(value * 500);
+                        setCustomFilter(new PIXI.filters.BulgePinchFilter([0.5, 0.5], firstBulgeParameter, secondBulgeParameter));
+                        updateFilters();
+                        return;
+                    }
+                    case 11: {
+                        setCustomFilter(new PIXI.filters.AdvancedBloomFilter({"brightness": value * importedCustomFilters[customIndex].multiplyValue}));
+                        updateFilters();
+                        return;
+                    }
+                    case 12: {
+                        setCustomFilter(new PIXI.filters.BlurFilter(value * importedCustomFilters[customIndex].multiplyValue + 1));
+                        updateFilters();
+                        return;
+                    }
+                    case 15: {
+                        setCustomFilter(new PIXI.filters.ZoomBlurFilter(value * importedCustomFilters[customIndex].multiplyValue));
+                        updateFilters();
+                        return;
+                    }
+                    default:
+                        return;
+                }
+            }
 
-        colorMatrixFilter.brightness(value + 1);
-        setFilters(colorMatrixFilter);
-        return;
-      }
-      case 3: {
-        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+        }
 
-        colorMatrixFilter.greyscale(value);
-        setFilters(colorMatrixFilter);
-        return;
-      }
-      case 4: {
-        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+        function removeFilter() {
+            var tempBasicFilter = basicFilter;
+            tempBasicFilter[basicIndex] = {};
+            setBasicFilters(tempBasicFilter);
+            updateFilters();
+        }
 
-        colorMatrixFilter.hue(value * 360);
-        setFilters(colorMatrixFilter);
-        return;
-      }
-      case 6: {
-        setFilters(new PIXI.filters.DotFilter(value));
-        return;
-      }
-      case 7: {
-        setFilters(new PIXI.filters.EmbossFilter(value * filters[index].multiplyValue + 1));
+        function updateFilters() {
+            const resultedFilter = basicFilter.concat(customFilter);
+            setFilters(resultedFilter);
+        }
 
-        return;
-      }
-      case 8: {
-        setFilters(new PIXI.filters.PixelateFilter(value * filters[index].multiplyValue + 1));
+        function changeSecondValue(value) {
+            switch (customIndex) {
+                case 9: {
+                    setSecondBulgeParameter(value);
+                    setCustomFilter(new PIXI.filters.BulgePinchFilter([0.5, 0.5], firstBulgeParameter, secondBulgeParameter));
+                    updateFilters();
+                }
+                default: {
+                    return;
+                }
+            }
+        }
 
-        return;
-      }
-      case 10: {
-        setFilters(new PIXI.filters.NoiseFilter(value));
+        function navigateBackToGallery() {
+            if (basicCarouselRef) basicCarouselRef.snapToItem(0);
+            if (customCarouselRef) customCarouselRef.snapToItem(0);
 
-        return;
-      }
-      case 13: {
-        setFirstBulgeParameter(value * 500);
-        console.log(firstBulgeParameter);
-        console.log(secondBulgeParameter);
+            setBasicFilters(importedBasicFilters.map(filter => filter.filter));
+            setCustomFilter(importedCustomFilters[0].filter);
+            setFilters([importedCustomFilters[0].filter]);
 
-        setFilters(new PIXI.filters.BulgePinchFilter([0.5, 0.5], firstBulgeParameter, secondBulgeParameter));
-        return;
+            setCustomIndex(0);
+            setBasicIndex(0);
 
-      }
-      case 15: {
-        setFilters(new PIXI.filters.AdvancedBloomFilter({ "brightness": value * filters[index].multiplyValue }));
-        return;
-      }
-      case 16: {
-        setFilters(new PIXI.filters.BlurFilter(value * filters[index].multiplyValue + 1));
-        return;
-      }
-      case 19: {
-        setFilters(new PIXI.filters.ZoomBlurFilter(value * filters[index].multiplyValue));
-        return;
-      }
-      default: return;
+            navigation.goBack();
+        }
+
+        async function storeDataToStorage(image) {
+            try {
+                //  await AsyncStorage.removeItem(StorageTypes.EDITED_PHOTOS);
+                let storedValue = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
+                const newImage = JSON.stringify(image);
+                let result = storedValue ? storedValue.concat(",").concat(newImage) : newImage;
+
+                await AsyncStorage.setItem(StorageTypes.EDITED_PHOTOS, result);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function _saveToCameraRollAsync() {
+            try {
+                let result = await captureRef(ref, {
+                    format: 'png',
+                });
+
+                // TODO: refactor permission
+                MediaLibrary.requestPermissionsAsync();
+                await MediaLibrary.saveToLibraryAsync(result);
+                await storeDataToStorage(result);
+                navigateBackToGallery();
+            } catch (snapshotError) {
+                console.error(snapshotError);
+            }
+        };
+
+        async function onNextPage(basic = true) {
+            if (basic) {
+                setBasicIndex(basicCarouselRef.currentIndex);
+            } else {
+                setCustomFilter(importedCustomFilters[customCarouselRef.currentIndex].filter);
+                setCustomIndex(customCarouselRef.currentIndex);
+                const resultedFilter = basicFilter.concat(importedCustomFilters[customCarouselRef.currentIndex].filter);
+                setFilters(resultedFilter);
+            }
+        }
+
+        const _renderItem = ({item}) => {
+            return (
+                <View>
+                    <TouchableOpacity style={styles.viewButton}>
+                        <Text style={styles.buttonText}>{item.name}  </Text>
+                    </TouchableOpacity>
+                </View>
+            );
+        };
+
+        return (
+            <View style={styles.container}>
+
+                <ExpoPixi.FilterImage
+                    source={photo}
+                    ref={(c) => setFilterImageRef(c)}
+                    style={styles.image}
+                    resizeMode={"cover"}
+                    filters={filter}
+                />
+                {isBasicFilterDisplayed &&
+                <View>
+                    <Carousel
+                        ref={(c) => setBasicCarouselRef(c)}
+                        data={importedBasicFilters}
+                        renderItem={_renderItem}
+                        sliderWidth={300}
+                        itemWidth={300}
+                        firstItem={1}
+                        containerCustomStyle={{flexGrow: 0}}
+                        onSnapToItem={() => onNextPage(true)}
+                    />
+
+                    <View style={{height: 60, flexDirection: "row", alignItems: "center"}}>
+                        {importedBasicFilters[basicIndex].hasSlider &&
+                        <Slider
+                            style={{flex: 1, height: 30}}
+                            minimumValue={0}
+                            maximumValue={1}
+                            minimumTrackTintColor={styleConstants.colors.secondary}
+                            maximumTrackTintColor={styleConstants.colors.dark}
+                            thumbTintColor={styleConstants.colors.secondary}
+                            onValueChange={(value) => changeValue(value, true)}
+                        />}
+                        {basicIndex !== 0 &&
+                        <TouchableOpacity style={styles.removeButton} onPress={() => removeFilter()}>
+                            <Text style={styles.removeButtonText}>Remove</Text>
+                        </TouchableOpacity>}
+                    </View>
+
+                </View>}
+                {!isBasicFilterDisplayed &&
+                <View>
+                    <Carousel
+                        ref={(c) => setCustomCarouselRef(c)}
+                        data={importedCustomFilters}
+                        renderItem={_renderItem}
+                        sliderWidth={300}
+                        itemWidth={300}
+                        firstItem={1}
+                        containerCustomStyle={{flexGrow: 0}}
+                        onSnapToItem={() => onNextPage(false)}
+                    />
+
+                    <View style={{height: 60}}>
+                        {importedCustomFilters[customIndex].hasSlider &&
+                        <Slider
+                            style={{width: "100%", height: 30}}
+                            minimumValue={0}
+                            maximumValue={1}
+                            minimumTrackTintColor={styleConstants.colors.secondary}
+                            maximumTrackTintColor={styleConstants.colors.dark}
+                            thumbTintColor={styleConstants.colors.secondary}
+                            onValueChange={(value) => changeValue(value, false)}
+                        />}
+
+                        {importedCustomFilters[customIndex].hasSecondSlider &&
+                        <Slider
+                            style={{width: "100%", height: 30}}
+                            minimumValue={0}
+                            maximumValue={1}
+                            minimumTrackTintColor={styleConstants.colors.secondary}
+                            maximumTrackTintColor={styleConstants.colors.dark}
+                            thumbTintColor={styleConstants.colors.secondary}
+                            onValueChange={(value) => changeSecondValue(value)}
+                        />}
+                    </View>
+                </View>
+                }
+
+                <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity style={styles.button} onPress={() => _saveToCameraRollAsync()}>
+                        <Text style={styles.buttonText}>Save </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={() => setFilterDisplay(!isBasicFilterDisplayed)}>
+                        <Text style={styles.buttonText}>X </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button} onPress={() => navigateBackToGallery()}>
+                        <Text style={styles.buttonText}>Back </Text>
+                    </TouchableOpacity>
+                </View>
+
+            </View>
+        );
     }
-  }
-
-  function changeSecondValue(value) {
-    switch (index) {
-      case 13: {
-        setSecondBulgeParameter(value);
-        setFilters(new PIXI.filters.BulgePinchFilter([0.5, 0.5], firstBulgeParameter, secondBulgeParameter));
-      }
-      default: return;
-    }
-  }
-
-  function navigateBackToGallery() {
-    carouselRef.snapToItem(0);
-    setIndex(0);
-    setFilters(filters[0]);
-    navigation.goBack();
-  }
-
-  async function storeDataToStorage(image) {
-    try {
-      let value = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
-      const newImage = JSON.stringify(image);
-
-      value = value ? value.concat(",", newImage) : newImage;
-      console.log('Edit=', value);
-      await AsyncStorage.setItem(StorageTypes.EDITED_PHOTOS, value);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function _saveToCameraRollAsync() {
-    try {
-      let result = await captureRef(ref, {
-        format: 'png',
-      });
-      MediaLibrary.requestPermissionsAsync()
-      await MediaLibrary.saveToLibraryAsync(result);
-      await storeDataToStorage(result);
-      navigateBackToGallery();
-    }
-    catch (snapshotError) {
-      console.error(snapshotError);
-    }
-  };
-
-  function snap() {
-    setIndex(carouselRef.currentIndex);
-    onPageSelected(carouselRef.currentIndex);
-  }
-
-  const _renderItem = ({ item }) => {
-    return (
-      <View>
-        <TouchableOpacity style={styles.viewButton} >
-          <Text style={styles.buttonText}>{item.name}  </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-  return (
-    <View style={styles.container}>
-
-      <ExpoPixi.FilterImage
-        source={photo}
-        ref={(c) => setFilterImageRef(c)}
-        style={styles.image}
-        resizeMode={"cover"}
-        filters={filter}
-      />
-
-      <Carousel
-        ref={(c) => setCarouselRef(c)}
-        data={filters}
-        renderItem={_renderItem}
-        sliderWidth={300}
-        itemWidth={300}
-        firstItem={1}
-
-        containerCustomStyle={{ flexGrow: 0 }}
-        onSnapToItem={() => snap()}
-      />
-
-      <View style={{ height: 60 }}>
-        {filters[index].hasSlider &&
-          <Slider
-            style={{ width: "100%", height: 30 }}
-
-            minimumValue={0}
-            maximumValue={1}
-            minimumTrackTintColor={styleConstants.colors.secondary}
-            maximumTrackTintColor={styleConstants.colors.dark}
-            thumbTintColor={styleConstants.colors.secondary}
-            onValueChange={(value) => changeValue(value)}
-          />}
-
-        {filters[index].hasSecondSlider &&
-          <Slider
-            style={{ width: "100%", height: 30 }}
-            minimumValue={0}
-            maximumValue={1}
-            minimumTrackTintColor={styleConstants.colors.secondary}
-            maximumTrackTintColor={styleConstants.colors.dark}
-            thumbTintColor={styleConstants.colors.secondary}
-            onValueChange={(value) => changeSecondValue(value)}
-          />}
-      </View>
-      <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity style={styles.button} onPress={() => _saveToCameraRollAsync()} >
-          <Text style={styles.buttonText}>Save  </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={() => navigateBackToGallery()} >
-          <Text style={styles.buttonText}>Back  </Text>
-        </TouchableOpacity>
-      </View>
-
-    </View>
-  );
-};
+;
 
 export default EditPhoto;
 const styles = StyleSheet.create({
-  container: {
-    marginVertical: styleConstants.padding.lg,
-    marginHorizontal: styleConstants.padding.md,
-    flex: 1,
-  },
-  image: {
-    flex: 1,
-  },
-  viewPager: {
-    height: 200
-  },
-  viewButton: {
-    backgroundColor: styleConstants.colors.white,
-    borderRadius: styleConstants.gridGutterWidth,
-    borderColor: styleConstants.colors.primary,
-    borderWidth: 2,
-    paddingVertical: styleConstants.gridGutterWidth / 3,
-    marginVertical: styleConstants.gridGutterWidth / 3,
-    justifyContent: "center"
-  },
-  button: {
-    backgroundColor: styleConstants.colors.white,
-    width: styleConstants.gridGutterWidth * 5,
-    borderRadius: styleConstants.gridGutterWidth,
-    borderColor: styleConstants.colors.primary,
-    borderWidth: 2,
-    height: styleConstants.gridGutterWidth * 1.5,
-    justifyContent: "center",
-    marginHorizontal: styleConstants.padding.sm / 2
+    container: {
+        marginVertical: styleConstants.padding.lg,
+        marginHorizontal: styleConstants.padding.md,
+        flex: 1,
+    },
+    image: {
+        flex: 1,
+    },
+    viewPager: {
+        height: 200
+    },
+    viewButton: {
+        backgroundColor: styleConstants.colors.white,
+        borderRadius: styleConstants.gridGutterWidth,
+        borderColor: styleConstants.colors.primary,
+        borderWidth: 2,
+        paddingVertical: styleConstants.gridGutterWidth / 3,
+        marginVertical: styleConstants.gridGutterWidth / 3,
+        justifyContent: "center"
+    },
+    removeButton: {
+        backgroundColor: styleConstants.colors.white,
+        borderRadius: styleConstants.gridGutterWidth,
+        borderColor: styleConstants.colors.secondary,
+        borderWidth: 2,
+        paddingVertical: styleConstants.gridGutterWidth / 6,
+        marginVertical: styleConstants.gridGutterWidth / 6,
+        justifyContent: "center"
+    },
+    button: {
+        backgroundColor: styleConstants.colors.white,
+        width: "30%",
+        borderRadius: styleConstants.gridGutterWidth,
+        borderColor: styleConstants.colors.primary,
+        borderWidth: 2,
+        height: styleConstants.gridGutterWidth * 1.5,
+        justifyContent: "center",
+        marginHorizontal: styleConstants.padding.sm / 2
 
-  },
-  buttonText: {
-    fontSize: styleConstants.fonts.md,
-    color: styleConstants.colors.primary,
-    textAlign: 'center'
-  }
+    },
+    buttonText: {
+        fontSize: styleConstants.fonts.md,
+        color: styleConstants.colors.primary,
+        textAlign: 'center'
+    },
+    removeButtonText: {
+        fontSize: styleConstants.fonts.sm,
+        color: styleConstants.colors.secondary,
+        textAlign: 'center'
+    }
 });

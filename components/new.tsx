@@ -6,145 +6,152 @@ import * as ImagePicker from "expo-image-picker";
 import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
 import FullWidthImage from 'react-native-fullwidth-image'
-import { StorageTypes, Routes }from '../utils/enums';
+import { StorageTypes, Routes } from '../utils/enums';
 
-const New = ({ navigation }) => {
-  const [image, setImage] = useState(null);
+const New = ({navigation}) => {
+    const [image, setImage] = useState(null);
 
-  async function storeDataToStorage(image) {
-    try {
-      let value = await AsyncStorage.getItem(StorageTypes.GALLERY);
-      const newImage = JSON.stringify(image);
-      value = value ? value.concat(",", newImage) : newImage;
-      await AsyncStorage.setItem(StorageTypes.GALLERY, value);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+    async function storeDataToStorage(image) {
+        try {
+            // await AsyncStorage.removeItem(StorageTypes.GALLERY);
+            // await AsyncStorage.removeItem(StorageTypes.EDITED_PHOTOS);
+            let storedValue = await AsyncStorage.getItem(StorageTypes.GALLERY);
+            const newImage = JSON.stringify(image);
+            let result = storedValue ? storedValue.concat(",").concat(newImage) : newImage;
+            await AsyncStorage.setItem(StorageTypes.GALLERY, result);
 
-  async function pickImageFromGallery() {
-    try {
-      let permission = await ImagePicker.getCameraRollPermissionsAsync();
-
-      if (permission.granted == false) {
-      ImagePicker.requestCameraRollPermissionsAsync();
-      permission = await ImagePicker.getCameraRollPermissionsAsync();
-      }
-
-      if (permission.granted == true) {
-        let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1
-      });
-
-        if (!result.cancelled) {
-          setImage(result);
-          storeDataToStorage(result.uri);
+        } catch (error) {
+            console.log(error);
         }
-      }
-    } catch(e) {console.log(e)}
-  }
+    };
 
-  async function pickImageFromCamera() {
+    async function pickImageFromGallery() {
+        try {
+            let permission = await ImagePicker.getCameraRollPermissionsAsync();
 
-    try {
-      let permission = await ImagePicker.getCameraPermissionsAsync();
+            if (permission.granted == false) {
+                ImagePicker.requestCameraRollPermissionsAsync();
+                permission = await ImagePicker.getCameraRollPermissionsAsync();
+            }
 
-      if (permission.granted == false) {
-      ImagePicker.requestCameraPermissionsAsync();
-      permission = await ImagePicker.getCameraPermissionsAsync();
-      }
+            if (permission.granted == true) {
+                let result = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    allowsEditing: true,
+                    quality: 1
+                });
 
-      if (permission.granted == true) {
-        let result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1
-      });
-
-        if (!result.cancelled) {
-          setImage(result);
-          storeDataToStorage(result.uri);
+                if (!result.cancelled) {
+                    setImage(result);
+                    storeDataToStorage(result.uri);
+                }
+            }
+        } catch (e) {
+            console.log(e)
         }
-      }
-    } catch(e) {console.log(e)}
-  }
-
-  async function redirectToEditPhoto() {
-
-    try {
-      AssetUtils.fromUriAsync(image.uri).then(fromUri => {
-        fromUri.localUri = fromUri.uri;
-        AssetUtils.resolveAsync(fromUri).then(uriResolved => {
-          navigation.navigate(Routes.NEW_EDIT, { photo: uriResolved })
-        });
-      });
-    } catch (error) {
-      console.log(error);
     }
-  }
 
-  return (
-    <View style={styles.container}>
-      <Icon
-        name="three-bars"
-        size={35}
-        color={styleConstants.colors.secondary}
-        onPress={() => navigation.toggleDrawer()}
-      />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => pickImageFromGallery()} >
-          <Text style={styles.buttonText}>Import from gallery  </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => pickImageFromCamera()} >
-          <Text style={styles.buttonText}>Import from camera  </Text>
-        </TouchableOpacity>
-      </View>
+    async function pickImageFromCamera() {
 
-      {image && (
-        <TouchableOpacity onPress={() => redirectToEditPhoto()}  >
-          <FullWidthImage
-            overlayColor={'#fff'}
-            resizeMode={'contain'}
-            style={styles.image}
-            source={{ uri: image.uri }}
-          />
-        </TouchableOpacity>
-      )}
-    </View>
-  );
+        try {
+            let permission = await ImagePicker.getCameraPermissionsAsync();
+
+            if (permission.granted == false) {
+                ImagePicker.requestCameraPermissionsAsync();
+                permission = await ImagePicker.getCameraPermissionsAsync();
+            }
+
+            if (permission.granted == true) {
+                let result = await ImagePicker.launchCameraAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    allowsEditing: true,
+                    quality: 1
+                });
+
+                if (!result.cancelled) {
+                    setImage(result);
+                    storeDataToStorage(result.uri);
+                }
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async function redirectToEditPhoto() {
+
+        try {
+            AssetUtils.fromUriAsync(image.uri).then(fromUri => {
+                fromUri.localUri = fromUri.uri;
+                AssetUtils.resolveAsync(fromUri).then(uriResolved => {
+                    navigation.navigate(Routes.NEW_EDIT, {photo: uriResolved})
+                });
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    return (
+        <View style={styles.container}>
+            <Icon
+                name="three-bars"
+                size={35}
+                color={styleConstants.colors.secondary}
+                onPress={() => navigation.toggleDrawer()}
+            />
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={() => pickImageFromGallery()}>
+                    <Text style={styles.buttonText}>Import from gallery </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={() => pickImageFromCamera()}>
+                    <Text style={styles.buttonText}>Import from camera </Text>
+                </TouchableOpacity>
+            </View>
+
+            {image && (
+                <TouchableOpacity onPress={() => redirectToEditPhoto()}>
+                    <FullWidthImage
+                        overlayColor={'#fff'}
+                        resizeMode={'contain'}
+                        style={styles.image}
+                        source={{uri: image.uri}}
+                    />
+                </TouchableOpacity>
+            )}
+        </View>
+    );
 };
 export default New;
 
 const styles = StyleSheet.create({
-  container: {
-    marginVertical: 30,
-    marginHorizontal: 20
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    marginHorizontal: -3
-  },
-  image: {
-    borderRadius: styleConstants.gridGutterWidth / 3,
-    marginVertical: styleConstants.padding.md,
-    borderColor: styleConstants.colors.primary,
-    borderWidth: 2,
-  },
-  button: {
-    backgroundColor: styleConstants.colors.white,
-    width: styleConstants.gridGutterWidth * 5,
-    borderRadius: styleConstants.gridGutterWidth,
-    borderColor: styleConstants.colors.primary,
-    borderWidth: 2,
-    height: styleConstants.gridGutterWidth * 1.5,
-    justifyContent: "center",
-    marginHorizontal: styleConstants.padding.sm / 2
-  },
-  buttonText: {
-    fontSize: styleConstants.fonts.md,
-    color: styleConstants.colors.primary,
-    textAlign: 'center'
-  }
+    container: {
+        marginVertical: 30,
+        marginHorizontal: 20
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        marginHorizontal: -3
+    },
+    image: {
+        borderRadius: styleConstants.gridGutterWidth / 3,
+        marginVertical: styleConstants.padding.md,
+        borderColor: styleConstants.colors.primary,
+        borderWidth: 2,
+    },
+    button: {
+        backgroundColor: styleConstants.colors.white,
+        width: styleConstants.gridGutterWidth * 5,
+        borderRadius: styleConstants.gridGutterWidth,
+        borderColor: styleConstants.colors.primary,
+        borderWidth: 2,
+        height: styleConstants.gridGutterWidth * 1.5,
+        justifyContent: "center",
+        marginHorizontal: styleConstants.padding.sm / 2
+    },
+    buttonText: {
+        fontSize: styleConstants.fonts.md,
+        color: styleConstants.colors.primary,
+        textAlign: 'center'
+    }
 });
