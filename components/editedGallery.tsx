@@ -23,10 +23,12 @@ const EditedGallery = ({navigation}) => {
 
         try {
             var value = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
+         ///   console.log('value', value);
             if (value !== null) {
                 let newValue = value.split(",").map(item => JSON.parse(item))
                     .filter(item => item !== null);
                 setImages(newValue);
+          //     console.log('newValuee', newValue);
             }
         } catch (error) {
             console.log("FROM EDITED GALLERY:", error);

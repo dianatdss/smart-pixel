@@ -14,6 +14,7 @@ const New = ({navigation}) => {
     async function storeDataToStorage(image) {
         try {
             // await AsyncStorage.removeItem(StorageTypes.GALLERY);
+            // await AsyncStorage.removeItem(StorageTypes.EDITED_PHOTOS);
             let storedValue = await AsyncStorage.getItem(StorageTypes.GALLERY);
             const newImage = JSON.stringify(image);
             let result = storedValue ? storedValue.concat(",").concat(newImage) : newImage;

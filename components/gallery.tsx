@@ -30,9 +30,12 @@ const Gallery = ({navigation}) => {
 
             var value = await AsyncStorage.getItem(StorageTypes.GALLERY);
             if (value !== null) {
+             //   console.log('value', value);
                 let newValue = value.split(",").map(item => JSON.parse(item))
                     .filter(item => item !== null);
                 setImages(newValue);
+            //    console.log('newValue', newValue);
+
             }
         } catch (error) {
             console.log("FROM GALLERY:", error);
