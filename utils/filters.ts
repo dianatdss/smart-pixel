@@ -71,6 +71,7 @@ export const parsedColorMatrix = colorMatrix.map(({ name, tools }) => {
   }),
   "hasSlider": tools && tools.length == 1
 }});*/
+/*
 const contrastFilter = new PIXI.filters.ColorMatrixFilter();
 // contrastFilter.contrast(0.1);
 
@@ -78,15 +79,20 @@ const contrastFilter = new PIXI.filters.ColorMatrixFilter();
 const brightnessFilter = new PIXI.filters.ColorMatrixFilter();
 brightnessFilter.brightness(1);
 
-
 const greyscale = new PIXI.filters.ColorMatrixFilter();
 greyscale.greyscale(1);
 
-const browniFilter = new PIXI.filters.ColorMatrixFilter();
-browniFilter.browni(1);
 
 const hueFilter = new PIXI.filters.ColorMatrixFilter();
 hueFilter.hue(180);
+*/
+const negativeFilter = new PIXI.filters.ColorMatrixFilter();
+negativeFilter.negative();
+const nightFilter = new PIXI.filters.ColorMatrixFilter();
+nightFilter.night(0.5);
+const browniFilter = new PIXI.filters.ColorMatrixFilter();
+browniFilter.browni(1);
+
 /*export const filters = [
   { "name": "None", "filter": {}, "hasSlider": false },
 
@@ -129,33 +135,35 @@ hueFilter.hue(180);
   // new PIXI.filters.ShockwaveFilter(),
 ];*/
 export const importedBasicFilters = [
-  { "name": "None", "filter": {}, "hasSlider": false },
-  { "name": "Contrast", "filter": {}, "hasSlider": true},
-  { "name": "Brightness", "filter": {}, "hasSlider": true},
-  { "name": "Greyscale", "filter": {}, "hasSlider": true},
-  { "name": "Hue", "filter": {}, "hasSlider": true, "multiplyValue": 360},
+    {"name": "None", "filter": {}, "hasSlider": false},
+    {"name": "Contrast", "filter": {}, "hasSlider": true},
+    {"name": "Brightness", "filter": {}, "hasSlider": true},
+    {"name": "Greyscale", "filter": {}, "hasSlider": true},
+    {"name": "Hue", "filter": {}, "hasSlider": true, "multiplyValue": 360},
+    {"name": "Saturation", "filter": {}, "hasSlider": true},
+
+    {"name": "Night", "filter": {}, "hasSlider": true},
 ];
 
-
 export const importedCustomFilters = [
-  { "name": "None", "filter": {}, "hasSlider": false },
-  { "name": "Browni", "filter": browniFilter, "hasSlider": false},
-  { "name": "Dots", "filter": new PIXI.filters.DotFilter(0), "hasSlider": true },
-  { "name": "Emboss", "filter": new PIXI.filters.EmbossFilter(), "multiplyValue": 20, "hasSlider": true },
-  { "name": "Pixelate", "filter": new PIXI.filters.PixelateFilter(1), "multiplyValue": 40, "hasSlider": true },
-  
-  { "name": "Cross Hatch", "filter": new PIXI.filters.CrossHatchFilter(), "hasSlider": false },
-  { "name": "Noise", "filter": new PIXI.filters.NoiseFilter(0), "hasSlider": true },
-  { "name": "Old Film", "filter": new PIXI.filters.OldFilmFilter(), "hasSlider": false },
-  { "name": "RGB Split", "filter": new PIXI.filters.RGBSplitFilter([-10,0],[10,0],[10,20]), "hasSlider": false }, //
-  { "name": "Bulge Pinch", "filter": new PIXI.filters.BulgePinchFilter([0.5, 0.5], 300, 1), "hasSlider": true, "hasSecondSlider": true },
+    {"name": "None", "filter": {}, "hasSlider": false},
+    {"name": "Browni", "filter": browniFilter, "hasSlider": false},
+    {"name": "Dots", "filter": new PIXI.filters.DotFilter(0.1), "hasSlider": true},
+    {"name": "Emboss", "filter": new PIXI.filters.EmbossFilter(), "multiplyValue": 20, "hasSlider": true},
+    {"name": "Pixelate", "filter": new PIXI.filters.PixelateFilter(1), "multiplyValue": 40, "hasSlider": true},
 
+    {"name": "Cross Hatch", "filter": new PIXI.filters.CrossHatchFilter(), "hasSlider": false},
+    {"name": "Noise", "filter": new PIXI.filters.NoiseFilter(0), "hasSlider": true},
+    {"name": "Old Film", "filter": new PIXI.filters.OldFilmFilter(), "hasSlider": false},
+    {"name": "RGB Split", "filter": new PIXI.filters.RGBSplitFilter([-10, 0], [10, 0], [10, 20]), "hasSlider": false}, //
+    {"name": "Bulge Pinch", "filter": new PIXI.filters.BulgePinchFilter([0.5, 0.5], 300, 1), "hasSlider": true, "hasSecondSlider": true},
 
-  { "name": "Motion Blur", "filter": new PIXI.filters.MotionBlurFilter([54, 40], 15, 0), "hasSlider": false },
-  { "name": "Advanced Bloom", "filter": new PIXI.filters.AdvancedBloomFilter({"brightness": 1, "quality": 20}), "multiplyValue": 1.5, "hasSlider": true},
-  { "name": "Blur", "filter": new PIXI.filters.BlurFilter(), "hasSlider": true, "multiplyValue": 50 },
-  { "name": "Twist", "filter": new PIXI.filters.TwistFilter(500, 20, 90), "hasSlider": false },
-  { "name": "Bloom", "filter": new PIXI.filters.BloomFilter(), "hasSlider": false },
+    {"name": "Motion Blur", "filter": new PIXI.filters.MotionBlurFilter([54, 40], 15, 0), "hasSlider": false},
+    {"name": "Advanced Bloom", "filter": new PIXI.filters.AdvancedBloomFilter({"brightness": 1, "quality": 20}), "multiplyValue": 1.5, "hasSlider": true},
+    {"name": "Blur", "filter": new PIXI.filters.BlurFilter(), "hasSlider": true, "multiplyValue": 50},
+    {"name": "Twist", "filter": new PIXI.filters.TwistFilter(500, 20, 90), "hasSlider": false},
+    {"name": "Bloom", "filter": new PIXI.filters.BloomFilter(), "hasSlider": false},
 
-  { "name": "Zoom Blur", "filter": new PIXI.filters.ZoomBlurFilter(0.05), "hasSlider": true, "multiplyValue": 0.1 }
+    {"name": "Zoom Blur", "filter": new PIXI.filters.ZoomBlurFilter(0.05), "hasSlider": true, "multiplyValue": 0.1},
+    {"name": "Negative", "filter": negativeFilter, "hasSlider": false}
 ];

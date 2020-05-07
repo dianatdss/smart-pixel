@@ -97,6 +97,24 @@ const EditPhoto = ({route, navigation}) => {
                         updateFilters();
                         return;
                     }
+                    case 5: {
+                        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+                        colorMatrixFilter.saturate(value);
+                        var tempBasicFilter = basicFilter;
+                        tempBasicFilter[basicIndex] = colorMatrixFilter;
+                        setBasicFilters(tempBasicFilter);
+                        updateFilters();
+                        return;
+                    }
+                    case 6: {
+                        const colorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+                        colorMatrixFilter.night(value);
+                        var tempBasicFilter = basicFilter;
+                        tempBasicFilter[basicIndex] = colorMatrixFilter;
+                        setBasicFilters(tempBasicFilter);
+                        updateFilters();
+                        return;
+                    }
                     default:
                         return;
                 }
@@ -229,6 +247,12 @@ const EditPhoto = ({route, navigation}) => {
             }
         }
 
+        function setFilterDisplayValue(value) {
+            setFilterDisplay(value);
+            setCustomIndex(0);
+            setBasicIndex(0);
+        }
+
         const _renderItem = ({item}) => {
             return (
                 <View>
@@ -241,7 +265,14 @@ const EditPhoto = ({route, navigation}) => {
 
         return (
             <View style={styles.container}>
-
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
+                    <TouchableOpacity style={styles.button} onPress={() => setFilterDisplayValue(true)}>
+                        <Text style={styles.buttonText}>Basic</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={() => setFilterDisplayValue(false)}>
+                        <Text style={styles.buttonText}>Custom</Text>
+                    </TouchableOpacity>
+                </View>
                 <ExpoPixi.FilterImage
                     source={photo}
                     ref={(c) => setFilterImageRef(c)}
@@ -319,13 +350,11 @@ const EditPhoto = ({route, navigation}) => {
                 </View>
                 }
 
-                <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <TouchableOpacity style={styles.button} onPress={() => _saveToCameraRollAsync()}>
                         <Text style={styles.buttonText}>Save </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => setFilterDisplay(!isBasicFilterDisplayed)}>
-                        <Text style={styles.buttonText}>X </Text>
-                    </TouchableOpacity>
+
 
                     <TouchableOpacity style={styles.button} onPress={() => navigateBackToGallery()}>
                         <Text style={styles.buttonText}>Back </Text>
@@ -340,7 +369,7 @@ const EditPhoto = ({route, navigation}) => {
 export default EditPhoto;
 const styles = StyleSheet.create({
     container: {
-        marginVertical: styleConstants.padding.lg,
+        marginVertical: styleConstants.padding.sm,
         marginHorizontal: styleConstants.padding.md,
         flex: 1,
     },
@@ -370,14 +399,13 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: styleConstants.colors.white,
-        width: "30%",
+        width: "40%",
         borderRadius: styleConstants.gridGutterWidth,
         borderColor: styleConstants.colors.primary,
         borderWidth: 2,
         height: styleConstants.gridGutterWidth * 1.5,
         justifyContent: "center",
         marginHorizontal: styleConstants.padding.sm / 2
-
     },
     buttonText: {
         fontSize: styleConstants.fonts.md,
