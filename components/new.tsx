@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { AsyncStorage, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import * as ImagePicker from "expo-image-picker";
 import AssetUtils from 'expo-asset-utils';
@@ -96,7 +96,7 @@ const New = ({navigation}) => {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <Icon
                     name="three-bars"
@@ -106,7 +106,7 @@ const New = ({navigation}) => {
                 />
                 <Icon
                     name="diff-added"
-                    size={35}
+                    size={(showOptions || image) ? 35 : 70}
                     color={showOptions ? styleConstants.colors.primary : styleConstants.colors.secondary}
                     onPress={() => setShowOptions(!showOptions)}
                 />
@@ -131,7 +131,7 @@ const New = ({navigation}) => {
                     />
                 </TouchableOpacity>
             )}
-        </View>
+        </ScrollView>
     );
 };
 export default New;
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     },
     image: {
         borderRadius: styleConstants.gridGutterWidth / 3,
-        marginVertical: styleConstants.padding.md,
+        marginVertical: styleConstants.padding.lg,
         borderColor: styleConstants.colors.primary,
         borderWidth: 2,
     },

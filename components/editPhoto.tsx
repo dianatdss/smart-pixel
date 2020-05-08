@@ -22,7 +22,7 @@ and also remove it from current Edited Photo
 *
 * */
 import React, { useState } from "react";
-import { AsyncStorage, Button, Slider, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { AsyncStorage, Dimensions, Slider, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ExpoPixi, { PIXI } from "expo-pixi";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { captureRef } from 'react-native-view-shot';
@@ -31,7 +31,7 @@ import { importedBasicFilters, importedCustomFilters } from '../utils/filters'
 import * as styleConstants from '../utils/styles'
 import { StorageTypes } from '../utils/enums';
 import Icon from "react-native-vector-icons/Octicons";
-import { Dimensions } from 'react-native';
+
 const screenWidth = Math.round(Dimensions.get('window').width) - 40;
 
 const EditPhoto = ({route, navigation}) => {
@@ -272,12 +272,12 @@ const EditPhoto = ({route, navigation}) => {
                     <TouchableOpacity style={[styles.button, isBasicFilterDisplayed ? styles.buttonSelected : {}]}
                                       onPress={() => setFilterDisplayValue(true)}>
                         <Text
-                            style={[styles.buttonText, isBasicFilterDisplayed ? styles.buttonTextSelected : {}]}>Basic</Text>
+                            style={[styles.buttonText, isBasicFilterDisplayed ? styles.buttonTextSelected : {}]}>Properties</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.button, !isBasicFilterDisplayed ? styles.buttonSelected : {}]}
                                       onPress={() => setFilterDisplayValue(false)}>
                         <Text
-                            style={[styles.buttonText, !isBasicFilterDisplayed ? styles.buttonTextSelected : {}]}>Custom</Text>
+                            style={[styles.buttonText, !isBasicFilterDisplayed ? styles.buttonTextSelected : {}]}>Filters</Text>
                     </TouchableOpacity>
                 </View>
                 <ExpoPixi.FilterImage
@@ -291,6 +291,8 @@ const EditPhoto = ({route, navigation}) => {
                 <View>
                     <View>
                         <Carousel
+                            layout={'tinder'}
+                            layoutCardOffset={`4`}
                             ref={(c) => setBasicCarouselRef(c)}
                             data={importedBasicFilters}
                             renderItem={_renderItem}
@@ -342,6 +344,8 @@ const EditPhoto = ({route, navigation}) => {
                 <View>
                     <View>
                         <Carousel
+                            layout={'tinder'}
+                            layoutCardOffset={`4`}
                             ref={(c) => setCustomCarouselRef(c)}
                             data={importedCustomFilters}
                             renderItem={_renderItem}
