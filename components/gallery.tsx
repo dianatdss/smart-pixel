@@ -1,17 +1,10 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
-import {
-    View,
-    StyleSheet,
-    Image,
-    TouchableOpacity,
-    FlatList, Text
-} from "react-native";
+import React, { useLayoutEffect, useState } from "react";
+import { AsyncStorage, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
-import { AsyncStorage } from "react-native";
 import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
 import { useIsFocused } from '@react-navigation/native';
-import { StorageTypes, Routes } from '../utils/enums';
+import { Routes, StorageTypes } from '../utils/enums';
 
 const Gallery = ({navigation}) => {
     const [images, setImages] = useState([]);

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { AsyncStorage } from "react-native";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import * as ImagePicker from "expo-image-picker";
 import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
 import FullWidthImage from 'react-native-fullwidth-image'
-import { StorageTypes, Routes } from '../utils/enums';
+import { Routes, StorageTypes } from '../utils/enums';
 
 const New = ({navigation}) => {
     const [image, setImage] = useState(null);

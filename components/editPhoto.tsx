@@ -31,6 +31,8 @@ import { importedBasicFilters, importedCustomFilters } from '../utils/filters'
 import * as styleConstants from '../utils/styles'
 import { StorageTypes } from '../utils/enums';
 import Icon from "react-native-vector-icons/Octicons";
+import { Dimensions } from 'react-native';
+const screenWidth = Math.round(Dimensions.get('window').width) - 40;
 
 const EditPhoto = ({route, navigation}) => {
         const {photo} = route.params;
@@ -292,8 +294,8 @@ const EditPhoto = ({route, navigation}) => {
                             ref={(c) => setBasicCarouselRef(c)}
                             data={importedBasicFilters}
                             renderItem={_renderItem}
-                            sliderWidth={300}
-                            itemWidth={300}
+                            sliderWidth={screenWidth}
+                            itemWidth={screenWidth}
                             firstItem={0}
                             containerCustomStyle={{flexGrow: 0}}
                             onSnapToItem={() => onNextPage(true)}
@@ -343,8 +345,8 @@ const EditPhoto = ({route, navigation}) => {
                             ref={(c) => setCustomCarouselRef(c)}
                             data={importedCustomFilters}
                             renderItem={_renderItem}
-                            sliderWidth={300}
-                            itemWidth={300}
+                            sliderWidth={screenWidth}
+                            itemWidth={screenWidth}
                             firstItem={0}
                             containerCustomStyle={{flexGrow: 0}}
                             onSnapToItem={() => onNextPage(false)}
@@ -367,8 +369,10 @@ const EditPhoto = ({route, navigation}) => {
 
                     <View style={{height: 60}}>
                         {importedCustomFilters[customIndex].hasSlider &&
+                        /* maybe render multiple sliders with a for and display the one with the index*/
+
                         <Slider
-                            style={{width: "100%", height: 30}}
+                            style={ {height: 30}}
                             minimumValue={0}
                             maximumValue={1}
                             minimumTrackTintColor={styleConstants.colors.secondary}
@@ -379,7 +383,7 @@ const EditPhoto = ({route, navigation}) => {
 
                         {importedCustomFilters[customIndex].hasSecondSlider &&
                         <Slider
-                            style={{width: "100%", height: 30}}
+                            style={{height: 30}}
                             minimumValue={0}
                             maximumValue={1}
                             minimumTrackTintColor={styleConstants.colors.secondary}
