@@ -30,6 +30,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { importedBasicFilters, importedCustomFilters } from '../utils/filters'
 import * as styleConstants from '../utils/styles'
 import { StorageTypes } from '../utils/enums';
+import Icon from "react-native-vector-icons/Octicons";
 
 const EditPhoto = ({route, navigation}) => {
         const {photo} = route.params;
@@ -213,8 +214,8 @@ const EditPhoto = ({route, navigation}) => {
                 let storedValue = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
                 const newImage = JSON.stringify(image);
                 let result = storedValue ? storedValue.concat(",").concat(newImage) : newImage;
-
                 await AsyncStorage.setItem(StorageTypes.EDITED_PHOTOS, result);
+
             } catch (error) {
                 console.log(error);
             }
@@ -266,11 +267,11 @@ const EditPhoto = ({route, navigation}) => {
         return (
             <View style={styles.container}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
-                    <TouchableOpacity style={styles.button} onPress={() => setFilterDisplayValue(true)}>
-                        <Text style={styles.buttonText}>Basic</Text>
+                    <TouchableOpacity style={[styles.button, isBasicFilterDisplayed  ? styles.buttonSelected : {}]} onPress={() => setFilterDisplayValue(true)}>
+                        <Text style={[styles.buttonText,  isBasicFilterDisplayed  ? styles.buttonTextSelected : {}]}>Basic</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => setFilterDisplayValue(false)}>
-                        <Text style={styles.buttonText}>Custom</Text>
+                    <TouchableOpacity style={[styles.button, !isBasicFilterDisplayed  ? styles.buttonSelected : {}]} onPress={() => setFilterDisplayValue(false)}>
+                        <Text style={[styles.buttonText,  !isBasicFilterDisplayed  ? styles.buttonTextSelected : {}]}>Custom</Text>
                     </TouchableOpacity>
                 </View>
                 <ExpoPixi.FilterImage
@@ -305,9 +306,13 @@ const EditPhoto = ({route, navigation}) => {
                             onValueChange={(value) => changeValue(value, true)}
                         />}
                         {basicIndex !== 0 &&
-                        <TouchableOpacity style={styles.removeButton} onPress={() => removeFilter()}>
-                            <Text style={styles.removeButtonText}>Remove</Text>
-                        </TouchableOpacity>}
+
+                        <Icon
+                            name="trashcan"
+                            size={35}
+                            color={styleConstants.colors.secondary}
+                            onPress={() => removeFilter()}
+                        />}
                     </View>
 
                 </View>}
@@ -349,16 +354,10 @@ const EditPhoto = ({route, navigation}) => {
                     </View>
                 </View>
                 }
-
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <TouchableOpacity style={styles.button} onPress={() => _saveToCameraRollAsync()}>
-                        <Text style={styles.buttonText}>Save </Text>
-                    </TouchableOpacity>
-
-
-                    <TouchableOpacity style={styles.button} onPress={() => navigateBackToGallery()}>
-                        <Text style={styles.buttonText}>Back </Text>
-                    </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={() => _saveToCameraRollAsync()}>
+                    <Text style={styles.buttonText}>Save </Text>
+                </TouchableOpacity>
                 </View>
 
             </View>
@@ -371,7 +370,7 @@ const styles = StyleSheet.create({
     container: {
         marginVertical: styleConstants.padding.sm,
         marginHorizontal: styleConstants.padding.md,
-        flex: 1,
+        flex: 1
     },
     image: {
         flex: 1,
@@ -397,6 +396,9 @@ const styles = StyleSheet.create({
         marginVertical: styleConstants.gridGutterWidth / 6,
         justifyContent: "center"
     },
+    buttonContainer: {
+        alignItems: 'center'
+    },
     button: {
         backgroundColor: styleConstants.colors.white,
         width: "40%",
@@ -405,12 +407,19 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         height: styleConstants.gridGutterWidth * 1.5,
         justifyContent: "center",
-        marginHorizontal: styleConstants.padding.sm / 2
+        alignItems: "center",
+        marginHorizontal: styleConstants.padding.sm / 2,
+    },
+    buttonSelected: {
+        borderColor: styleConstants.colors.secondary,
     },
     buttonText: {
         fontSize: styleConstants.fonts.md,
         color: styleConstants.colors.primary,
         textAlign: 'center'
+    },
+    buttonTextSelected: {
+        color: styleConstants.colors.secondary
     },
     removeButtonText: {
         fontSize: styleConstants.fonts.sm,

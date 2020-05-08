@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React, { Component } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme  } from "@react-navigation/native";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -9,9 +9,21 @@ import New from './components/new';
 import EditPhoto from './components/editPhoto';
 import EditedGallery from "./components/editedGallery";
 import { Routes }from './utils/enums';
+import { colors } from './utils/styles';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
+
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: colors.secondary,
+    text: colors.secondary,
+    card: colors.white,
+    border: colors.secondary
+  },
+};
 
 export default class HelloWorldApp extends Component {
   state = {
@@ -28,7 +40,7 @@ export default class HelloWorldApp extends Component {
 
     // to hide ÉditPhoto menu option
     return (
-      <NavigationContainer>
+      <NavigationContainer theme={MyTheme}>
         <Drawer.Navigator initialRouteName={Routes.GALLERY}>
           <Drawer.Screen name={Routes.GALLERY} component={GalleryStack} />
           <Drawer.Screen name={Routes.EDITED_GALLERY} component={EditedGalleryStack} />
