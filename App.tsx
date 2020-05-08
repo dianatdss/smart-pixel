@@ -41,10 +41,10 @@ export default class HelloWorldApp extends Component {
     // to hide ÉditPhoto menu option
     return (
       <NavigationContainer theme={MyTheme}>
-        <Drawer.Navigator initialRouteName={Routes.GALLERY}>
+        <Drawer.Navigator initialRouteName={Routes.NEW}>
+          <Drawer.Screen name={Routes.NEW} component={NewStack} />
           <Drawer.Screen name={Routes.GALLERY} component={GalleryStack} />
           <Drawer.Screen name={Routes.EDITED_GALLERY} component={EditedGalleryStack} />
-          <Drawer.Screen name={Routes.NEW} component={NewStack} />
         </Drawer.Navigator>
       </NavigationContainer>
 
