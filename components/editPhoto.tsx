@@ -24,7 +24,7 @@ and also remove it from current Edited Photo
 import React, { useState } from "react";
 import { AsyncStorage, Button, Slider, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ExpoPixi, { PIXI } from "expo-pixi";
-import Carousel from 'react-native-snap-carousel';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { captureRef } from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
 import { importedBasicFilters, importedCustomFilters } from '../utils/filters'
@@ -267,11 +267,15 @@ const EditPhoto = ({route, navigation}) => {
         return (
             <View style={styles.container}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
-                    <TouchableOpacity style={[styles.button, isBasicFilterDisplayed  ? styles.buttonSelected : {}]} onPress={() => setFilterDisplayValue(true)}>
-                        <Text style={[styles.buttonText,  isBasicFilterDisplayed  ? styles.buttonTextSelected : {}]}>Basic</Text>
+                    <TouchableOpacity style={[styles.button, isBasicFilterDisplayed ? styles.buttonSelected : {}]}
+                                      onPress={() => setFilterDisplayValue(true)}>
+                        <Text
+                            style={[styles.buttonText, isBasicFilterDisplayed ? styles.buttonTextSelected : {}]}>Basic</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.button, !isBasicFilterDisplayed  ? styles.buttonSelected : {}]} onPress={() => setFilterDisplayValue(false)}>
-                        <Text style={[styles.buttonText,  !isBasicFilterDisplayed  ? styles.buttonTextSelected : {}]}>Custom</Text>
+                    <TouchableOpacity style={[styles.button, !isBasicFilterDisplayed ? styles.buttonSelected : {}]}
+                                      onPress={() => setFilterDisplayValue(false)}>
+                        <Text
+                            style={[styles.buttonText, !isBasicFilterDisplayed ? styles.buttonTextSelected : {}]}>Custom</Text>
                     </TouchableOpacity>
                 </View>
                 <ExpoPixi.FilterImage
@@ -283,16 +287,32 @@ const EditPhoto = ({route, navigation}) => {
                 />
                 {isBasicFilterDisplayed &&
                 <View>
-                    <Carousel
-                        ref={(c) => setBasicCarouselRef(c)}
-                        data={importedBasicFilters}
-                        renderItem={_renderItem}
-                        sliderWidth={300}
-                        itemWidth={300}
-                        firstItem={0}
-                        containerCustomStyle={{flexGrow: 0}}
-                        onSnapToItem={() => onNextPage(true)}
-                    />
+                    <View>
+                        <Carousel
+                            ref={(c) => setBasicCarouselRef(c)}
+                            data={importedBasicFilters}
+                            renderItem={_renderItem}
+                            sliderWidth={300}
+                            itemWidth={300}
+                            firstItem={0}
+                            containerCustomStyle={{flexGrow: 0}}
+                            onSnapToItem={() => onNextPage(true)}
+                        />
+                        <Pagination
+                            dotsLength={importedBasicFilters.length}
+                            activeDotIndex={basicIndex}
+                            containerStyle={{marginVertical: -10}}
+                            dotStyle={{
+                                width: 5,
+                                height: 5,
+                                borderRadius: 5,
+                                marginHorizontal: 8,
+                                backgroundColor: styleConstants.colors.secondary
+                            }}
+                            inactiveDotOpacity={0.4}
+                            inactiveDotScale={0.6}
+                        />
+                    </View>
 
                     <View style={{height: 60, flexDirection: "row", alignItems: "center"}}>
                         {importedBasicFilters[basicIndex].hasSlider &&
@@ -318,16 +338,32 @@ const EditPhoto = ({route, navigation}) => {
                 </View>}
                 {!isBasicFilterDisplayed &&
                 <View>
-                    <Carousel
-                        ref={(c) => setCustomCarouselRef(c)}
-                        data={importedCustomFilters}
-                        renderItem={_renderItem}
-                        sliderWidth={300}
-                        itemWidth={300}
-                        firstItem={0}
-                        containerCustomStyle={{flexGrow: 0}}
-                        onSnapToItem={() => onNextPage(false)}
-                    />
+                    <View>
+                        <Carousel
+                            ref={(c) => setCustomCarouselRef(c)}
+                            data={importedCustomFilters}
+                            renderItem={_renderItem}
+                            sliderWidth={300}
+                            itemWidth={300}
+                            firstItem={0}
+                            containerCustomStyle={{flexGrow: 0}}
+                            onSnapToItem={() => onNextPage(false)}
+                        />
+                        <Pagination
+                            dotsLength={importedCustomFilters.length}
+                            activeDotIndex={customIndex}
+                            containerStyle={{marginVertical: -10}}
+                            dotStyle={{
+                                width: 5,
+                                height: 5,
+                                borderRadius: 5,
+                                marginHorizontal: -5,
+                                backgroundColor: styleConstants.colors.secondary
+                            }}
+                            inactiveDotOpacity={0.4}
+                            inactiveDotScale={0.6}
+                        />
+                    </View>
 
                     <View style={{height: 60}}>
                         {importedCustomFilters[customIndex].hasSlider &&
@@ -355,9 +391,9 @@ const EditPhoto = ({route, navigation}) => {
                 </View>
                 }
                 <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={() => _saveToCameraRollAsync()}>
-                    <Text style={styles.buttonText}>Save </Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={() => _saveToCameraRollAsync()}>
+                        <Text style={styles.buttonText}>Save </Text>
+                    </TouchableOpacity>
                 </View>
 
             </View>
