@@ -10,11 +10,13 @@ import { StorageTypes, Routes } from '../utils/enums';
 
 const New = ({navigation}) => {
     const [image, setImage] = useState(null);
+    const [showOptions, setShowOptions] = useState(false);
 
     async function storeDataToStorage(image) {
         try {
-            // await AsyncStorage.removeItem(StorageTypes.GALLERY);
-            // await AsyncStorage.removeItem(StorageTypes.EDITED_PHOTOS);
+            /*     await AsyncStorage.removeItem(StorageTypes.GALLERY);
+                 await AsyncStorage.removeItem(StorageTypes.EDITED_PHOTOS);
+            */
             let storedValue = await AsyncStorage.getItem(StorageTypes.GALLERY);
             const newImage = JSON.stringify(image);
             let result = storedValue ? storedValue.concat(",").concat(newImage) : newImage;
@@ -44,6 +46,7 @@ const New = ({navigation}) => {
                 if (!result.cancelled) {
                     setImage(result);
                     storeDataToStorage(result.uri);
+                    setShowOptions(false);
                 }
             }
         } catch (e) {
@@ -71,6 +74,7 @@ const New = ({navigation}) => {
                 if (!result.cancelled) {
                     setImage(result);
                     storeDataToStorage(result.uri);
+                    setShowOptions(false);
                 }
             }
         } catch (e) {
@@ -94,21 +98,30 @@ const New = ({navigation}) => {
 
     return (
         <View style={styles.container}>
-            <Icon
-                name="three-bars"
-                size={35}
-                color={styleConstants.colors.secondary}
-                onPress={() => navigation.toggleDrawer()}
-            />
+            <View style={styles.header}>
+                <Icon
+                    name="three-bars"
+                    size={35}
+                    color={styleConstants.colors.secondary}
+                    onPress={() => navigation.toggleDrawer()}
+                />
+                <Icon
+                    name="diff-added"
+                    size={35}
+                    color={showOptions ? styleConstants.colors.primary : styleConstants.colors.secondary}
+                    onPress={() => setShowOptions(!showOptions)}
+                />
+            </View>
+            {showOptions &&
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={() => pickImageFromGallery()}>
-                    <Text style={styles.buttonText}>Import from gallery </Text>
+                    <Text style={styles.buttonText}>Open gallery </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={() => pickImageFromCamera()}>
-                    <Text style={styles.buttonText}>Import from camera </Text>
+                    <Text style={styles.buttonText}>Open camera </Text>
                 </TouchableOpacity>
             </View>
-
+            }
             {image && (
                 <TouchableOpacity onPress={() => redirectToEditPhoto()}>
                     <FullWidthImage
@@ -126,9 +139,9 @@ export default New;
 
 const styles = StyleSheet.create({
     container: {
-        marginVertical: 30,
         marginHorizontal: 20
     },
+    header: {justifyContent: 'space-between', flexDirection: 'row'},
     buttonContainer: {
         flexDirection: 'row',
         marginHorizontal: -3
@@ -145,7 +158,7 @@ const styles = StyleSheet.create({
         borderRadius: styleConstants.gridGutterWidth,
         borderColor: styleConstants.colors.primary,
         borderWidth: 2,
-        height: styleConstants.gridGutterWidth * 1.5,
+        paddingVertical: styleConstants.padding.sm,
         justifyContent: "center",
         marginHorizontal: styleConstants.padding.sm / 2
     },

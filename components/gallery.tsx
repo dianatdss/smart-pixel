@@ -4,7 +4,7 @@ import {
     StyleSheet,
     Image,
     TouchableOpacity,
-    FlatList
+    FlatList, Text
 } from "react-native";
 import Icon from "react-native-vector-icons/Octicons";
 import { AsyncStorage } from "react-native";
@@ -30,15 +30,13 @@ const Gallery = ({navigation}) => {
 
             var value = await AsyncStorage.getItem(StorageTypes.GALLERY);
             if (value !== null) {
-             //   console.log('value', value);
                 let newValue = value.split(",").map(item => JSON.parse(item))
                     .filter(item => item !== null);
                 setImages(newValue);
-            //    console.log('newValue', newValue);
 
             }
         } catch (error) {
-            console.log( error);
+            console.log(error);
         }
     }
 
@@ -56,14 +54,31 @@ const Gallery = ({navigation}) => {
         }
     }
 
+    async function deleteAll() {
+        await AsyncStorage.removeItem(StorageTypes.GALLERY);
+        setImages([]);
+    }
+
     return (
         <View style={styles.container}>
-            <Icon
-                name="three-bars"
-                size={35}
-                color={styleConstants.colors.secondary}
-                onPress={() => navigation.toggleDrawer()}
-            />
+            <View style={styles.header}>
+                <Icon
+                    name="three-bars"
+                    size={35}
+                    color={styleConstants.colors.secondary}
+                    onPress={() => navigation.toggleDrawer()}
+                />
+                <View style={styles.headerRight}>
+                    <Text style={styles.headerRightText}>Remove
+                        all</Text>
+                    <Icon
+                        name="trashcan"
+                        size={35}
+                        color={styleConstants.colors.secondary}
+                        onPress={() => deleteAll()}
+                    />
+                </View>
+            </View>
 
             <FlatList
                 style={styles.flatList}
@@ -92,6 +107,9 @@ const styles = StyleSheet.create({
         marginHorizontal: -styleConstants.padding.sm
     },
 
+    header: {justifyContent: 'space-between', flexDirection: 'row'},
+    headerRight: {flexDirection: 'row', alignItems: 'center'},
+    headerRightText: {fontSize: 16, color: styleConstants.colors.secondary, paddingRight: 10},
     image: {
         borderRadius: styleConstants.gridGutterWidth / 3,
         width: (styleConstants.dimensions.fullWidth - 40) / 2,

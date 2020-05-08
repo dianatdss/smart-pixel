@@ -23,15 +23,13 @@ const EditedGallery = ({navigation}) => {
 
         try {
             var value = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
-         ///   console.log('value', value);
             if (value !== null) {
                 let newValue = value.split(",").map(item => JSON.parse(item))
                     .filter(item => item !== null);
                 setImages(newValue);
-          //     console.log('newValuee', newValue);
             }
         } catch (error) {
-            console.log("FROM EDITED GALLERY:", error);
+            console.log(error);
         }
     }
 
@@ -39,7 +37,9 @@ const EditedGallery = ({navigation}) => {
         try {
             let img = images.filter(item => item !== selectedImage);
             setImages(img);
-            AsyncStorage.setItem(StorageTypes.EDITED_PHOTOS, JSON.stringify(img));
+            let string = img.length ? JSON.stringify(img) : null;
+            string = string.substring(1, (string.length - 1));
+            await AsyncStorage.setItem(StorageTypes.EDITED_PHOTOS, string);
             setSelectedImage(null);
         } catch (error) {
             console.log(error);
@@ -68,16 +68,33 @@ const EditedGallery = ({navigation}) => {
         }
     }
 
+    async function deleteAll() {
+        await AsyncStorage.removeItem(StorageTypes.EDITED_PHOTOS);
+        setSelectedImage(null);
+        setImages([]);
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.c1}>
-
-                <Icon
-                    name="three-bars"
-                    size={35}
-                    color={styleConstants.colors.secondary}
-                    onPress={() => navigation.toggleDrawer()}
-                />
+                <View style={styles.header}>
+                    <Icon
+                        name="three-bars"
+                        size={35}
+                        color={styleConstants.colors.secondary}
+                        onPress={() => navigation.toggleDrawer()}
+                    />
+                    <View style={styles.headerRight}>
+                        <Text style={styles.headerRightText}>Remove
+                            all</Text>
+                        <Icon
+                            name="trashcan"
+                            size={35}
+                            color={styleConstants.colors.secondary}
+                            onPress={() => deleteAll()}
+                        />
+                    </View>
+                </View>
                 <FlatList
                     style={styles.flatList}
                     data={images}
@@ -87,6 +104,7 @@ const EditedGallery = ({navigation}) => {
                             setSelectedImage(item)
                         }}>
                             <Image source={{uri: item}}
+                                   overlayColor={'#000'}
                                    style={[styles.image, item == selectedImage ? styles.selectedImage : {}]}
                                    resizeMode={'contain'}/>
                         </TouchableOpacity>
@@ -99,14 +117,14 @@ const EditedGallery = ({navigation}) => {
                 {selectedImage &&
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={() => redirectToEditPhoto()}>
-                        <Text style={styles.buttonText}>Edit photo </Text>
+                        <Text style={styles.buttonText}>Edit</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={() => deletePhoto()}>
-                        <Text style={styles.buttonText}>Delete photo </Text>
+                        <Text style={styles.buttonText}>Delete</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.button} onPress={() => sharePhoto()}>
-                        <Text style={styles.buttonText}>Share photo </Text>
+                        <Text style={styles.buttonText}>Share</Text>
                     </TouchableOpacity>
                 </View>
                 }
@@ -122,14 +140,17 @@ const styles = StyleSheet.create({
         marginHorizontal: styleConstants.padding.sm,
         flex: 1
     },
+    header: {justifyContent: 'space-between', flexDirection: 'row'},
+    headerRight: {flexDirection: 'row', alignItems: 'center'},
+    headerRightText: {fontSize: 16, color: styleConstants.colors.secondary, paddingRight: 10},
     c1: {
         flex: .9
     },
-    flatList: {
-        marginHorizontal: -styleConstants.padding.sm
-    },
     c2: {
         flex: .1
+    },
+    flatList: {
+        marginHorizontal: -styleConstants.padding.sm
     },
     image: {
         borderRadius: styleConstants.gridGutterWidth / 3,
@@ -142,9 +163,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-    },
-    selectedImage: {
-        borderColor: styleConstants.colors.secondary
     },
     button: {
         backgroundColor: styleConstants.colors.white,
@@ -160,5 +178,8 @@ const styles = StyleSheet.create({
         fontSize: styleConstants.fonts.md,
         color: styleConstants.colors.primary,
         textAlign: 'center'
-    }
+    },
+    selectedImage: {
+        borderColor: styleConstants.colors.secondary
+    },
 });
