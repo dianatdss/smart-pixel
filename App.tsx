@@ -15,13 +15,13 @@ const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 const MyTheme = {
-  ...DefaultTheme,
+  dark: false,
   colors: {
-    ...DefaultTheme.colors,
     primary: colors.secondary,
     text: colors.secondary,
-    card: colors.white,
-    border: colors.secondary
+    card: colors.dark,
+    border: colors.secondary,
+    background: colors.dark
   },
 };
 
@@ -38,7 +38,6 @@ export default class HelloWorldApp extends Component {
 
   render() {
 
-    // to hide ÉditPhoto menu option
     return (
       <NavigationContainer theme={MyTheme}>
         <Drawer.Navigator initialRouteName={Routes.NEW}>
@@ -47,7 +46,6 @@ export default class HelloWorldApp extends Component {
           <Drawer.Screen name={Routes.EDITED_GALLERY} component={EditedGalleryStack} />
         </Drawer.Navigator>
       </NavigationContainer>
-
     );
   }
 }

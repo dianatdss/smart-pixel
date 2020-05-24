@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from "react";
 import { AsyncStorage, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/Octicons";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
 import { useIsFocused } from '@react-navigation/native';
@@ -55,21 +55,23 @@ const Gallery = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Icon
-                    name="three-bars"
-                    size={35}
-                    color={styleConstants.colors.secondary}
-                    onPress={() => navigation.toggleDrawer()}
-                />
+                <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+                    <Icon
+                        name="menu"
+                        size={35}
+                        color={styleConstants.colors.secondary}
+                    /></TouchableOpacity>
                 <View style={styles.headerRight}>
                     <Text style={styles.headerRightText}>Remove
                         all</Text>
-                    <Icon
-                        name="trashcan"
-                        size={35}
-                        color={styleConstants.colors.secondary}
-                        onPress={() => deleteAll()}
-                    />
+                    <TouchableOpacity onPress={() => deleteAll()}>
+                        <Icon
+                            name="delete"
+                            size={35}
+                            color={styleConstants.colors.secondary}
+                        />
+                    </TouchableOpacity>
+
                 </View>
             </View>
 
@@ -95,34 +97,27 @@ const styles = StyleSheet.create({
         marginHorizontal: styleConstants.padding.sm,
         flex: 1
     },
-
     flatList: {
         marginHorizontal: -styleConstants.padding.sm
     },
-
-    header: {justifyContent: 'space-between', flexDirection: 'row'},
-    headerRight: {flexDirection: 'row', alignItems: 'center'},
-    headerRightText: {fontSize: 16, color: styleConstants.colors.secondary, paddingRight: 10},
+    header: {
+        justifyContent: 'space-between',
+        flexDirection: 'row'
+    },
+    headerRight: {
+        flexDirection: 'row', alignItems: 'center'
+    },
+    headerRightText: {
+        fontSize: 16,
+        color: styleConstants.colors.secondary,
+        paddingRight: 10
+    },
     image: {
-        borderRadius: styleConstants.gridGutterWidth / 3,
+        borderRadius: styleConstants.borderRadius,
         width: (styleConstants.dimensions.fullWidth - 40) / 2,
         height: styleConstants.dimensions.fullWidth / 2,
         margin: styleConstants.padding.sm,
         borderWidth: 2,
         borderColor: styleConstants.colors.primary
-    },
-    button: {
-        backgroundColor: styleConstants.colors.white,
-        width: styleConstants.gridGutterWidth * 5,
-        borderRadius: styleConstants.gridGutterWidth,
-        borderColor: styleConstants.colors.primary,
-        borderWidth: 2,
-        height: styleConstants.gridGutterWidth * 1.5,
-        justifyContent: "center"
-    },
-    buttonText: {
-        fontSize: styleConstants.fonts.md,
-        color: styleConstants.colors.primary,
-        textAlign: 'center'
     }
 });

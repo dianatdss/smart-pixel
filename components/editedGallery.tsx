@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from "react";
 import { AsyncStorage, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/Octicons";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
 import { useIsFocused } from '@react-navigation/native';
@@ -78,21 +78,21 @@ const EditedGallery = ({navigation}) => {
         <View style={styles.container}>
             <View style={styles.c1}>
                 <View style={styles.header}>
-                    <Icon
-                        name="three-bars"
-                        size={35}
-                        color={styleConstants.colors.secondary}
-                        onPress={() => navigation.toggleDrawer()}
-                    />
+                    <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+                        <Icon
+                            name="menu"
+                            size={35}
+                            color={styleConstants.colors.secondary}
+                        /></TouchableOpacity>
                     <View style={styles.headerRight}>
                         <Text style={styles.headerRightText}>Remove
                             all</Text>
-                        <Icon
-                            name="trashcan"
-                            size={35}
-                            color={styleConstants.colors.secondary}
-                            onPress={() => deleteAll()}
-                        />
+                        <TouchableOpacity onPress={() => deleteAll()}>
+                            <Icon
+                                name="delete"
+                                size={35}
+                                color={styleConstants.colors.secondary}
+                            /></TouchableOpacity>
                     </View>
                 </View>
                 <FlatList
@@ -116,15 +116,30 @@ const EditedGallery = ({navigation}) => {
             <View style={styles.c2}>
                 {selectedImage &&
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={() => redirectToEditPhoto()}>
-                        <Text style={styles.buttonText}>Edit</Text>
+                    <TouchableOpacity onPress={() => redirectToEditPhoto()}>
+                        <Icon
+                            style={styles.icon}
+                            name="edit"
+                            size={35}
+                            color={styleConstants.colors.primary}
+                        />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => deletePhoto()}>
-                        <Text style={styles.buttonText}>Delete</Text>
+                    <TouchableOpacity onPress={() => deletePhoto()}>
+                        <Icon
+                            style={styles.icon}
+                            name="delete"
+                            size={35}
+                            color={styleConstants.colors.primary}
+                        />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button} onPress={() => sharePhoto()}>
-                        <Text style={styles.buttonText}>Share</Text>
+                    <TouchableOpacity onPress={() => sharePhoto()}>
+                        <Icon
+                            style={styles.icon}
+                            name="share"
+                            size={35}
+                            color={styleConstants.colors.primary}
+                        />
                     </TouchableOpacity>
                 </View>
                 }
@@ -153,33 +168,25 @@ const styles = StyleSheet.create({
         marginHorizontal: -styleConstants.padding.sm
     },
     image: {
-        borderRadius: styleConstants.gridGutterWidth / 3,
+        borderRadius: styleConstants.borderRadius,
         width: (styleConstants.dimensions.fullWidth - 40) / 2,
         height: styleConstants.dimensions.fullWidth / 2,
         margin: styleConstants.padding.sm,
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: styleConstants.colors.primary
     },
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
     },
-    button: {
-        backgroundColor: styleConstants.colors.white,
-        width: styleConstants.gridGutterWidth * 3.5,
-        borderRadius: styleConstants.gridGutterWidth,
+    icon: {
+        borderWidth: 1,
         borderColor: styleConstants.colors.primary,
-        borderWidth: 2,
-        height: styleConstants.gridGutterWidth * 1.5,
-        justifyContent: "center",
-        padding: styleConstants.gridGutterWidth / 2,
-    },
-    buttonText: {
-        fontSize: styleConstants.fonts.md,
-        color: styleConstants.colors.primary,
-        textAlign: 'center'
+        padding: styleConstants.gridGutterWidth / 3,
+        borderRadius: styleConstants.borderRadius
     },
     selectedImage: {
-        borderColor: styleConstants.colors.secondary
+        borderColor: styleConstants.colors.secondary,
+        borderWidth: 3
     },
 });

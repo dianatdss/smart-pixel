@@ -30,7 +30,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { importedBasicFilters, importedCustomFilters } from '../utils/filters'
 import * as styleConstants from '../utils/styles'
 import { StorageTypes } from '../utils/enums';
-import Icon from "react-native-vector-icons/Octicons";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const screenWidth = Math.round(Dimensions.get('window').width) - 40;
 
@@ -307,8 +307,8 @@ const EditPhoto = ({route, navigation}) => {
                             activeDotIndex={basicIndex}
                             containerStyle={{marginVertical: -10}}
                             dotStyle={{
-                                width: 5,
-                                height: 5,
+                                width: 10,
+                                height: 10,
                                 borderRadius: 5,
                                 marginHorizontal: 8,
                                 backgroundColor: styleConstants.colors.secondary
@@ -325,14 +325,14 @@ const EditPhoto = ({route, navigation}) => {
                             minimumValue={0}
                             maximumValue={1}
                             minimumTrackTintColor={styleConstants.colors.secondary}
-                            maximumTrackTintColor={styleConstants.colors.dark}
+                            maximumTrackTintColor={styleConstants.colors.white}
                             thumbTintColor={styleConstants.colors.secondary}
                             onValueChange={(value) => changeValue(value, true)}
                         />}
                         {basicIndex !== 0 &&
 
                         <Icon
-                            name="trashcan"
+                            name="delete"
                             size={35}
                             color={styleConstants.colors.secondary}
                             onPress={() => removeFilter()}
@@ -380,7 +380,7 @@ const EditPhoto = ({route, navigation}) => {
                             minimumValue={0}
                             maximumValue={1}
                             minimumTrackTintColor={styleConstants.colors.secondary}
-                            maximumTrackTintColor={styleConstants.colors.dark}
+                            maximumTrackTintColor={styleConstants.colors.white}
                             thumbTintColor={styleConstants.colors.secondary}
                             onValueChange={(value) => changeValue(value, false)}
                         />}
@@ -391,7 +391,7 @@ const EditPhoto = ({route, navigation}) => {
                             minimumValue={0}
                             maximumValue={1}
                             minimumTrackTintColor={styleConstants.colors.secondary}
-                            maximumTrackTintColor={styleConstants.colors.dark}
+                            maximumTrackTintColor={styleConstants.colors.white}
                             thumbTintColor={styleConstants.colors.secondary}
                             onValueChange={(value) => changeSecondValue(value)}
                         />}
@@ -423,8 +423,8 @@ const styles = StyleSheet.create({
         height: 200
     },
     viewButton: {
-        backgroundColor: styleConstants.colors.white,
-        borderRadius: styleConstants.gridGutterWidth,
+        backgroundColor: styleConstants.colors.dark,
+        borderRadius: styleConstants.borderRadius,
         borderColor: styleConstants.colors.primary,
         borderWidth: 2,
         paddingVertical: styleConstants.gridGutterWidth / 3,
@@ -432,8 +432,8 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     removeButton: {
-        backgroundColor: styleConstants.colors.white,
-        borderRadius: styleConstants.gridGutterWidth,
+     //   backgroundColor: styleConstants.colors.white,
+        borderRadius: styleConstants.borderRadius,
         borderColor: styleConstants.colors.secondary,
         borderWidth: 2,
         paddingVertical: styleConstants.gridGutterWidth / 6,
@@ -444,9 +444,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     button: {
-        backgroundColor: styleConstants.colors.white,
         width: "40%",
-        borderRadius: styleConstants.gridGutterWidth,
+        borderRadius: styleConstants.borderRadius,
         borderColor: styleConstants.colors.primary,
         borderWidth: 2,
         height: styleConstants.gridGutterWidth * 1.5,
