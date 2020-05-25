@@ -161,9 +161,8 @@ export const importedCustomFilters = [
     {"name": "Motion Blur", "filter": new PIXI.filters.MotionBlurFilter([54, 40], 15, 0), "hasSlider": false},
     {"name": "Advanced Bloom", "filter": new PIXI.filters.AdvancedBloomFilter({"brightness": 1, "quality": 20}), "multiplyValue": 1.5, "hasSlider": true},
     {"name": "Blur", "filter": new PIXI.filters.BlurFilter(), "hasSlider": true, "multiplyValue": 50},
-    {"name": "Twist", "filter": new PIXI.filters.TwistFilter(500, 20, 90), "hasSlider": false},
     {"name": "Bloom", "filter": new PIXI.filters.BloomFilter(), "hasSlider": false},
-
     {"name": "Zoom Blur", "filter": new PIXI.filters.ZoomBlurFilter(0.05), "hasSlider": true, "multiplyValue": 0.1},
+
     {"name": "Negative", "filter": negativeFilter, "hasSlider": false}
 ];

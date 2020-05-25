@@ -159,7 +159,7 @@ const EditPhoto = ({route, navigation}) => {
                         updateFilters();
                         return;
                     }
-                    case 15: {
+                    case 14: {
                         setCustomFilter(new PIXI.filters.ZoomBlurFilter(value * importedCustomFilters[customIndex].multiplyValue));
                         updateFilters();
                         return;

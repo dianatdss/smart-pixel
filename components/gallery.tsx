@@ -55,12 +55,6 @@ const Gallery = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-                    <Icon
-                        name="menu"
-                        size={35}
-                        color={styleConstants.colors.secondary}
-                    /></TouchableOpacity>
                 <View style={styles.headerRight}>
                     <Text style={styles.headerRightText}>Remove
                         all</Text>
@@ -101,7 +95,7 @@ const styles = StyleSheet.create({
         marginHorizontal: -styleConstants.padding.sm
     },
     header: {
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         flexDirection: 'row'
     },
     headerRight: {
