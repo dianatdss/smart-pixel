@@ -20,13 +20,11 @@ const Gallery = ({navigation}) => {
 
     async function getDataFromStorage() {
         try {
-
             var value = await AsyncStorage.getItem(StorageTypes.GALLERY);
             if (value !== null) {
                 let newValue = value.split(",").map(item => JSON.parse(item))
                     .filter(item => item !== null);
                 setImages(newValue);
-
             }
         } catch (error) {
             console.log(error);
@@ -68,18 +66,16 @@ const Gallery = ({navigation}) => {
 
                 </View>
             </View>
-
             <FlatList
                 style={styles.flatList}
                 data={images}
                 numColumns={2}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={({item}) => (
                     <TouchableOpacity onPress={() => redirectToEditPhoto(item)}>
                         <Image source={{uri: item}} style={styles.image} overlayColor={'#000'} resizeMode={'contain'}/>
                     </TouchableOpacity>
                 )}
-
-                keyExtractor={(item, index) => index.toString()}
             />
         </View>
     );

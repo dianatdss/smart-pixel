@@ -1,15 +1,16 @@
 import "react-native-gesture-handler";
 import React, { Component } from "react";
-import { NavigationContainer  } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme  } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Gallery from './components/gallery';
-import New from './components/new';
-import EditPhoto from './components/editPhoto';
-import EditedGallery from "./components/editedGallery";
+import Gallery from './screens/gallery';
+import New from './screens/new';
+import EditPhoto from './screens/editPhoto';
+import EditedGallery from "./screens/editedGallery";
 import { Routes }from './utils/enums';
 import { colors } from './utils/styles';
+import { TouchableOpacity } from 'react-native';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -86,7 +87,8 @@ class ErrorBoundary extends React.Component {
     return { hasError: true };
   }
   render() {
-    if (this.state.hasError) {
+      // @ts-ignore
+      if (this.state.hasError) {
       return <h1>Something went wrong.</h1>;
     }
     return this.props.children;

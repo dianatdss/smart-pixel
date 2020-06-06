@@ -44,6 +44,7 @@ const New = ({navigation}) => {
 
                 if (!result.cancelled) {
                     setImage(result);
+                    // @ts-ignore
                     storeDataToStorage(result.uri);
                     setShowOptions(false);
                 }
@@ -54,7 +55,6 @@ const New = ({navigation}) => {
     }
 
     async function pickImageFromCamera() {
-
         try {
             let permission = await ImagePicker.getCameraPermissionsAsync();
 
@@ -72,6 +72,7 @@ const New = ({navigation}) => {
 
                 if (!result.cancelled) {
                     setImage(result);
+                    // @ts-ignore
                     storeDataToStorage(result.uri);
                     setShowOptions(false);
                 }
@@ -82,7 +83,6 @@ const New = ({navigation}) => {
     }
 
     async function redirectToEditPhoto() {
-
         try {
             AssetUtils.fromUriAsync(image.uri).then(fromUri => {
                 fromUri.localUri = fromUri.uri;
