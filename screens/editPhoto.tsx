@@ -159,11 +159,6 @@ const EditPhoto = ({route, navigation}) => {
                         updateFilters();
                         return;
                     }
-                    case 15: {
-                        setCustomFilter(new PIXI.filters.ZoomBlurFilter(value * importedCustomFilters[customIndex].multiplyValue));
-                        updateFilters();
-                        return;
-                    }
                     default:
                         return;
                 }
@@ -212,7 +207,6 @@ const EditPhoto = ({route, navigation}) => {
 
         async function storeDataToStorage(image) {
             try {
-                //  await AsyncStorage.removeItem(StorageTypes.EDITED_PHOTOS);
                 let storedValue = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
                 const newImage = JSON.stringify(image);
                 let result = storedValue ? storedValue.concat(",").concat(newImage) : newImage;

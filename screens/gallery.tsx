@@ -20,13 +20,11 @@ const Gallery = ({navigation}) => {
 
     async function getDataFromStorage() {
         try {
-
             var value = await AsyncStorage.getItem(StorageTypes.GALLERY);
             if (value !== null) {
                 let newValue = value.split(",").map(item => JSON.parse(item))
                     .filter(item => item !== null);
                 setImages(newValue);
-
             }
         } catch (error) {
             console.log(error);
@@ -55,12 +53,6 @@ const Gallery = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-                    <Icon
-                        name="menu"
-                        size={35}
-                        color={styleConstants.colors.secondary}
-                    /></TouchableOpacity>
                 <View style={styles.headerRight}>
                     <Text style={styles.headerRightText}>Remove
                         all</Text>
@@ -74,18 +66,16 @@ const Gallery = ({navigation}) => {
 
                 </View>
             </View>
-
             <FlatList
                 style={styles.flatList}
                 data={images}
                 numColumns={2}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={({item}) => (
                     <TouchableOpacity onPress={() => redirectToEditPhoto(item)}>
                         <Image source={{uri: item}} style={styles.image} overlayColor={'#000'} resizeMode={'contain'}/>
                     </TouchableOpacity>
                 )}
-
-                keyExtractor={(item, index) => index.toString()}
             />
         </View>
     );
@@ -101,7 +91,7 @@ const styles = StyleSheet.create({
         marginHorizontal: -styleConstants.padding.sm
     },
     header: {
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         flexDirection: 'row'
     },
     headerRight: {

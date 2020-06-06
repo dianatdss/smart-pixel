@@ -78,12 +78,6 @@ const EditedGallery = ({navigation}) => {
         <View style={styles.container}>
             <View style={styles.c1}>
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-                        <Icon
-                            name="menu"
-                            size={35}
-                            color={styleConstants.colors.secondary}
-                        /></TouchableOpacity>
                     <View style={styles.headerRight}>
                         <Text style={styles.headerRightText}>Remove
                             all</Text>
@@ -153,13 +147,14 @@ export default EditedGallery;
 const styles = StyleSheet.create({
     container: {
         marginHorizontal: styleConstants.padding.sm,
-        flex: 1
+        flex: 1,
+        position: 'relative'
     },
-    header: {justifyContent: 'space-between', flexDirection: 'row'},
+    header: {justifyContent: 'flex-end', flexDirection: 'row'},
     headerRight: {flexDirection: 'row', alignItems: 'center'},
     headerRightText: {fontSize: 16, color: styleConstants.colors.secondary, paddingRight: 10},
     c1: {
-        flex: .9
+        flex: 10
     },
     c2: {
         flex: .1
@@ -176,6 +171,10 @@ const styles = StyleSheet.create({
         borderColor: styleConstants.colors.primary
     },
     buttonContainer: {
+        position: 'absolute',
+        bottom: 10,
+        left: 0,
+        right:0,
         flexDirection: 'row',
         justifyContent: 'space-around',
     },
@@ -183,7 +182,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: styleConstants.colors.primary,
         padding: styleConstants.gridGutterWidth / 3,
-        borderRadius: styleConstants.borderRadius
+        borderRadius: styleConstants.borderRadius,
+        backgroundColor: styleConstants.colors.dark
     },
     selectedImage: {
         borderColor: styleConstants.colors.secondary,

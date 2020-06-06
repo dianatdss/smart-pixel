@@ -44,6 +44,7 @@ const New = ({navigation}) => {
 
                 if (!result.cancelled) {
                     setImage(result);
+                    // @ts-ignore
                     storeDataToStorage(result.uri);
                     setShowOptions(false);
                 }
@@ -54,7 +55,6 @@ const New = ({navigation}) => {
     }
 
     async function pickImageFromCamera() {
-
         try {
             let permission = await ImagePicker.getCameraPermissionsAsync();
 
@@ -72,6 +72,7 @@ const New = ({navigation}) => {
 
                 if (!result.cancelled) {
                     setImage(result);
+                    // @ts-ignore
                     storeDataToStorage(result.uri);
                     setShowOptions(false);
                 }
@@ -82,7 +83,6 @@ const New = ({navigation}) => {
     }
 
     async function redirectToEditPhoto() {
-
         try {
             AssetUtils.fromUriAsync(image.uri).then(fromUri => {
                 fromUri.localUri = fromUri.uri;
@@ -99,13 +99,7 @@ const New = ({navigation}) => {
         <ScrollView>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-                        <Icon
-                            name="menu"
-                            size={35}
-                            color={styleConstants.colors.secondary}
-                        />
-                    </TouchableOpacity>
+
                     <TouchableOpacity onPress={() => setShowOptions(!showOptions)}>
                         <Icon
                             name="add-box"
@@ -152,7 +146,7 @@ const styles = StyleSheet.create({
     container: {
         marginHorizontal: 20
     },
-    header: {justifyContent: 'space-between', flexDirection: 'row'},
+    header: {justifyContent: 'flex-end', flexDirection: 'row'},
     buttonContainer: {
         marginHorizontal: -3,
         alignItems: 'flex-end',

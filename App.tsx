@@ -1,18 +1,19 @@
 import "react-native-gesture-handler";
 import React, { Component } from "react";
 import { NavigationContainer, DefaultTheme  } from "@react-navigation/native";
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-
-import Gallery from './components/gallery';
-import New from './components/new';
-import EditPhoto from './components/editPhoto';
-import EditedGallery from "./components/editedGallery";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Gallery from './screens/gallery';
+import New from './screens/new';
+import EditPhoto from './screens/editPhoto';
+import EditedGallery from "./screens/editedGallery";
 import { Routes }from './utils/enums';
 import { colors } from './utils/styles';
+import { TouchableOpacity } from 'react-native';
 
-const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 const MyTheme = {
   dark: false,
@@ -40,11 +41,38 @@ export default class HelloWorldApp extends Component {
 
     return (
       <NavigationContainer theme={MyTheme}>
-        <Drawer.Navigator initialRouteName={Routes.NEW}>
-          <Drawer.Screen name={Routes.NEW} component={NewStack} />
-          <Drawer.Screen name={Routes.GALLERY} component={GalleryStack} />
-          <Drawer.Screen name={Routes.EDITED_GALLERY} component={EditedGalleryStack} />
-        </Drawer.Navigator>
+        <Tab.Navigator initialRouteName={Routes.NEW}>
+          <Tab.Screen
+              name={Routes.NEW}
+              component={NewStack}
+              options={{
+                tabBarLabel: 'Home',
+                tabBarIcon: ({ color, size }) => (
+                    <MaterialCommunityIcons name="home" color={color} size={size} />
+                ),
+              }}
+          />
+          <Tab.Screen
+              name={Routes.GALLERY}
+              component={GalleryStack}
+              options={{
+                tabBarLabel: 'Gallery',
+                tabBarIcon: ({ color, size }) => (
+                    <MaterialCommunityIcons name="image-multiple" color={color} size={size} />
+                ),
+              }}
+          />
+          <Tab.Screen
+              name={Routes.EDITED_GALLERY}
+              component={EditedGalleryStack}
+              options={{
+                tabBarLabel: 'Studio',
+                tabBarIcon: ({ color, size }) => (
+                    <MaterialCommunityIcons name="auto-fix" color={color} size={size} />
+                ),
+              }}
+          />
+        </Tab.Navigator>
       </NavigationContainer>
     );
   }
@@ -59,7 +87,8 @@ class ErrorBoundary extends React.Component {
     return { hasError: true };
   }
   render() {
-    if (this.state.hasError) {
+      // @ts-ignore
+      if (this.state.hasError) {
       return <h1>Something went wrong.</h1>;
     }
     return this.props.children;
