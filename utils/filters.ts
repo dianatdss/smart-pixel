@@ -93,6 +93,31 @@ nightFilter.night(0.5);
 const browniFilter = new PIXI.filters.ColorMatrixFilter();
 browniFilter.browni(1);
 
+const browniSepia = new PIXI.filters.ColorMatrixFilter();
+browniSepia._loadMatrix([
+        0.25, 0.5, 0.125, 0, 0,
+        0.15, 0.3, 0.07, 0, 0,
+        0.04, 0.06, 0.02, 0, 0,
+        0, 0, 0, 1, 0
+    ]
+);
+const reddishSepia = new PIXI.filters.ColorMatrixFilter();
+reddishSepia._loadMatrix([
+        0.36, 0.72, 0.18, 0, 0,
+        0.08, 0.16, 0.04, 0, 0,
+        0.08, 0.16, 0.04, 0, 0,
+        0, 0, 0, 1, 0
+    ]
+);
+const goldenSepia = new PIXI.filters.ColorMatrixFilter();
+goldenSepia._loadMatrix([
+        0.5, 1, 0.25, 0, 0,
+        0.38, 0.76, 0.19, 0, 0,
+        0.05, 0.1, 0.025, 0, 0,
+        0, 0, 0, 1, 0
+    ]
+);
+
 /*export const filters = [
   { "name": "None", "filter": {}, "hasSlider": false },
 
@@ -141,25 +166,41 @@ export const importedBasicFilters = [
     {"name": "Greyscale", "filter": {}, "hasSlider": true},
     {"name": "Hue", "filter": {}, "hasSlider": true, "multiplyValue": 360},
     {"name": "Saturation", "filter": {}, "hasSlider": true},
-
-    {"name": "Night", "filter": {}, "hasSlider": true},
 ];
 
 export const importedCustomFilters = [
     {"name": "None", "filter": {}, "hasSlider": false},
     {"name": "Browni", "filter": browniFilter, "hasSlider": false},
     {"name": "Dots", "filter": new PIXI.filters.DotFilter(0.1), "hasSlider": true},
-    {"name": "Emboss", "filter": new PIXI.filters.EmbossFilter(), "multiplyValue": 20, "hasSlider": true},
+    {"name": "Emboss", "filter": new PIXI.filters.EmbossFilter()},
     {"name": "Pixelate", "filter": new PIXI.filters.PixelateFilter(1), "multiplyValue": 40, "hasSlider": true},
     {"name": "Cross Hatch", "filter": new PIXI.filters.CrossHatchFilter(), "hasSlider": false},
 
     {"name": "Noise", "filter": new PIXI.filters.NoiseFilter(0), "hasSlider": true},
     {"name": "Old Film", "filter": new PIXI.filters.OldFilmFilter(), "hasSlider": false},
     {"name": "RGB Split", "filter": new PIXI.filters.RGBSplitFilter([-10, 0], [10, 0], [10, 20]), "hasSlider": false}, //
-    {"name": "Bulge Pinch", "filter": new PIXI.filters.BulgePinchFilter([0.5, 0.5], 300, 1), "hasSlider": true, "hasSecondSlider": true},
+    {
+        "name": "Bulge Pinch",
+        "filter": new PIXI.filters.BulgePinchFilter([0.5, 0.5], 300, 1),
+        "hasSlider": true,
+        "hasSecondSlider": true
+    },
     {"name": "Motion Blur", "filter": new PIXI.filters.MotionBlurFilter([54, 40], 15, 0), "hasSlider": false},
 
-    {"name": "Advanced Bloom", "filter": new PIXI.filters.AdvancedBloomFilter({"brightness": 1, "quality": 20}), "multiplyValue": 1.5, "hasSlider": true},
+    {
+        "name": "Advanced Bloom",
+        "filter": new PIXI.filters.AdvancedBloomFilter({"brightness": 1, "quality": 20}),
+        "multiplyValue": 1.5,
+        "hasSlider": true
+    },
+    {"name": "Negative", "filter": negativeFilter, "hasSlider": false},
+
     {"name": "Blur", "filter": new PIXI.filters.BlurFilter(), "hasSlider": true, "multiplyValue": 50},
-    {"name": "Negative", "filter": negativeFilter, "hasSlider": false}
+    {"name": "Night", "filter": {}, "hasSlider": true},
+    {"name": "Browni Sepia", "filter": browniSepia, "hasSlider": false},
+
+    {"name": "Reddish Sepia", "filter": reddishSepia, "hasSlider": false},
+
+    {"name": "Golden Sepia", "filter": goldenSepia, "hasSlider": false},
+
 ];
