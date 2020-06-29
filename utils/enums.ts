@@ -15,6 +15,8 @@ export enum StorageTypes {
 
      'EDITED_GALLERY' = 'Studio',
      'EDITED_GALLERY_MAIN' = 'Your edited pics',
-     'EDITED_GALLERY_EDIT' = 'Edit new photo'
+     'EDITED_GALLERY_EDIT' = 'Edit new photo',
+
+     'PERSONALIZE' = 'Personalize'
     
  }

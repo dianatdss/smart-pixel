@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React, { Component } from "react";
-import { NavigationContainer, DefaultTheme  } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -8,9 +8,9 @@ import Gallery from './screens/gallery';
 import New from './screens/new';
 import EditPhoto from './screens/editPhoto';
 import EditedGallery from "./screens/editedGallery";
-import { Routes }from './utils/enums';
+import Personalize from "./screens/personalize";
+import { Routes } from './utils/enums';
 import { colors } from './utils/styles';
-import { TouchableOpacity } from 'react-native';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -69,6 +69,16 @@ export default class HelloWorldApp extends Component {
                 tabBarLabel: 'Studio',
                 tabBarIcon: ({ color, size }) => (
                     <MaterialCommunityIcons name="auto-fix" color={color} size={size} />
+                ),
+              }}
+          />
+          <Tab.Screen
+              name={Routes.PERSONALIZE}
+              component={Personalize}
+              options={{
+                tabBarLabel: 'Personalize',
+                tabBarIcon: ({ color, size }) => (
+                    <MaterialCommunityIcons name="image-filter-vintage" color={color} size={size} />
                 ),
               }}
           />

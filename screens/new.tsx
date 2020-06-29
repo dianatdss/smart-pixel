@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AsyncStorage, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { AsyncStorage, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as ImagePicker from "expo-image-picker";
 import AssetUtils from 'expo-asset-utils';
