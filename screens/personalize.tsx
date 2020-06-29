@@ -93,6 +93,7 @@ const Personalize = ({navigation}) => {
                     setImage(result);
                     // @ts-ignore
                     //  storeDataToStorage(result.uri);
+                    await convertImageToFilteredImage(result);
                     setShowOptions(false);
                 }
             }
@@ -156,7 +157,6 @@ const Personalize = ({navigation}) => {
     return (
         <ScrollView>
             <View style={styles.container}>
-
 
                 <View style={styles.header}>
 
