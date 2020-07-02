@@ -70,7 +70,6 @@ const EditPhoto = ({route, navigation}) => {
                     var tempBasicFilter = basicFilter;
                     tempBasicFilter[basicIndex] = colorMatrixFilter;
                     setBasicFilters(tempBasicFilter);
-
                     setSliderValue(value)
                     updateFilters();
                     return;
@@ -249,11 +248,11 @@ const EditPhoto = ({route, navigation}) => {
             basicValues[basicIndex] = sliderValue ? sliderValue : 0;
             setBasicValues(basicValues);
             setBasicIndex(basicCarouselRef.currentIndex);
+            setSliderValue(basicValues[basicCarouselRef.currentIndex] ? basicValues[basicCarouselRef.currentIndex] :0)
         } else {
             setCustomFilter(importedCustomFilters[customCarouselRef.currentIndex].filter);
             setCustomIndex(customCarouselRef.currentIndex);
             setSliderValue(0);
-
             const resultedFilter = basicFilter.concat(importedCustomFilters[customCarouselRef.currentIndex].filter);
             setFilters(resultedFilter);
         }
@@ -334,7 +333,7 @@ const EditPhoto = ({route, navigation}) => {
                             style={{flex: 1, height: 30}}
                             minimumValue={0}
                             maximumValue={1}
-                            value={basicValues[basicIndex] ? basicValues[basicIndex] : 0}
+                            value={sliderValue ? sliderValue : 0}
                             minimumTrackTintColor={styleConstants.colors.secondary}
                             maximumTrackTintColor={styleConstants.colors.white}
                             thumbTintColor={styleConstants.colors.secondary}

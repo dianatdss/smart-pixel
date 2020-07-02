@@ -6,7 +6,7 @@ import AssetUtils from 'expo-asset-utils';
 import * as styleConstants from '../utils/styles'
 import { colors } from '../utils/styles'
 import ExpoPixi, { PIXI } from "expo-pixi";
-import { StorageTypes } from '../utils/enums';
+import { Routes, StorageTypes } from '../utils/enums';
 import UIStepper from 'react-native-ui-stepper';
 import { captureRef } from "react-native-view-shot";
 import * as MediaLibrary from 'expo-media-library';
@@ -25,15 +25,15 @@ const Personalize = ({navigation}) => {
 
     const [matrix, setMatrixState] = useState([1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]);
 
-    async function storeDataToStorage(image) {
+    async function storeDataToStorage(image, key) {
         try {
             /*     await AsyncStorage.removeItem(StorageTypes.GALLERY);
                  await AsyncStorage.removeItem(StorageTypes.EDITED_PHOTOS);
             */
-            let storedValue = await AsyncStorage.getItem(StorageTypes.EDITED_PHOTOS);
+            let storedValue = await AsyncStorage.getItem(key);
             const newImage = JSON.stringify(image);
             let result = storedValue ? storedValue.concat(",").concat(newImage) : newImage;
-            await AsyncStorage.setItem(StorageTypes.EDITED_PHOTOS, result);
+            await AsyncStorage.setItem(key, result);
 
         } catch (error) {
             console.log(error);
@@ -64,6 +64,8 @@ const Personalize = ({navigation}) => {
                     setImage(result);
                     // @ts-ignore
                     // @ts-ignore
+                    await storeDataToStorage(result.uri, StorageTypes.GALLERY);
+
                     await convertImageToFilteredImage(result);
                     setShowOptions(false);
                 }
@@ -92,7 +94,7 @@ const Personalize = ({navigation}) => {
                 if (!result.cancelled) {
                     setImage(result);
                     // @ts-ignore
-                    //  storeDataToStorage(result.uri);
+                    await storeDataToStorage(result.uri, StorageTypes.GALLERY);
                     await convertImageToFilteredImage(result);
                     setShowOptions(false);
                 }
@@ -126,13 +128,21 @@ const Personalize = ({navigation}) => {
             // TODO: refactor permission
             MediaLibrary.requestPermissionsAsync();
             await MediaLibrary.saveToLibraryAsync(result);
-            await storeDataToStorage(result);
-            //  navigateBackToGallery();
+            await storeDataToStorage(result, StorageTypes.EDITED_PHOTOS);
+             navigateToStudio();
         } catch (snapshotError) {
             console.error(snapshotError);
         }
     };
 
+    function navigateToStudio() {
+        setMatrixState([1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]);
+        setImage(null);
+        setFilteredImage(null);
+        setFilter(null);
+        navigation.navigate(Routes.EDITED_GALLERY);
+
+    }
     function updateMatrix(value, index) {
         console.log(value)
         matrix[index] = value;
