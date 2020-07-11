@@ -197,7 +197,16 @@ const Personalize = ({navigation}) => {
                     }
                 </View>
 
-
+                {!filteredImage &&
+                <View><Text style={[styles.instructions, styles.headline]}>Create your own filters! </Text>
+                <Text style={styles.instructions}>Modify the matrix's values in order to change the image's colors.</Text>
+                    <Text style={styles.instructions}>The first three lines each belong to a RGB channel.</Text>
+                    <Text style={styles.instructions}>In order to keep the image's brightness, each line should have the sum 1.</Text>
+                    <Text style={styles.instructions}>Enhancing the sum will lighten the photo and minimizing it will darken the photo.</Text>
+                    <Text style={styles.instructions}>The last two columns on each line and the entire 4th line belong to the opacity channel.</Text>
+                    <Text style={[styles.instructions, styles.headline]}>Feel free to have as much fun as you wish!</Text>
+                </View>
+                }
                 {filteredImage && (
                     <View style={styles.imageContainer}>
                         <ExpoPixi.FilterImage
@@ -315,5 +324,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between'
+    },
+    headline: {
+        fontSize: styleConstants.fonts.md,
+        lineHeight: styleConstants.fonts.md * 2
+    },
+    instructions: {
+        color: styleConstants.colors.white,
+        lineHeight: styleConstants.fonts.sm * 2,
+        fontSize: styleConstants.fonts.sm
     }
 });
